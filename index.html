@@ -9,10 +9,10 @@
     body { font-family: sans-serif; }
     .slider-container { width: 100%; max-width: 900px; margin: 40px auto; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); background-color: #000; }
     .slider-wrapper { display: flex; transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
-    .slide { min-width: 100%; box-sizing: border-box; position: relative; } /* 다시보기 버튼 위치 기준 */
+    .slide { min-width: 100%; box-sizing: border-box; position: relative; }
     .slide video { width: 100%; display: block; }
 
-    /* 하단 이동 버튼 스타일 (✨수정: flex-start로 변경하여 왼쪽으로 정렬) */
+    /* ✨수정된 하단 버튼 영역 스타일 */
     .button-wrapper { 
         position: absolute; 
         bottom: 25px; 
@@ -21,11 +21,15 @@
         padding: 0 25px; 
         box-sizing: border-box; 
         display: flex; 
-        justify-content: flex-start; /* ✨ 버튼들을 왼쪽부터 정렬 */
-        gap: 15px; /* 버튼들 사이의 간격 */
+        justify-content: space-between; /* ✨ 양쪽 끝으로 정렬 */
         z-index: 10; 
         pointer-events: none; 
     }
+    /* ✨ 첫 슬라이드처럼 버튼이 하나만 있을 때 오른쪽으로 정렬 */
+    .button-wrapper.single-right {
+        justify-content: flex-end;
+    }
+
     .slider-btn { 
         background-color: rgba(0, 0, 0, 0.5); 
         color: white; 
@@ -44,41 +48,23 @@
     .slider-btn:hover { background-color: white; color: black; }
     .restart-btn { background-color: #007bff; border-color: #007bff; }
     
-    /* ✨ '다음으로 이동' 버튼을 오른쪽으로 보냄 */
-    .button-wrapper .next-btn.show {
-        margin-left: auto; /* ✨ 다른 버튼들을 왼쪽으로 밀고 본인은 오른쪽으로 정렬 */
-    }
-
-    /* --- ✨ 수정된 '다시보기' 버튼 스타일 --- */
+    /* 다시보기 버튼 스타일 */
     .replay-btn-wrapper {
-        position: absolute; /* 비디오 위에 위치 */
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-        text-align: center;
-        z-index: 20;
-        display: none; /* 기본적으로 숨김 */
-        pointer-events: none; /* 하위 버튼만 클릭되도록 설정 */
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center; z-index: 20;
+        display: none; pointer-events: none;
     }
     .replay-btn {
-        background-color: rgba(0, 0, 0, 0.6);
-        color: white;
-        border: 2px solid white;
-        width: 80px;
-        height: 80px;
-        border-radius: 50%; /* 원형 버튼 */
-        font-size: 24px;
-        cursor: pointer;
-        place-content: center; /* 아이콘 중앙 정렬 */
-        display: grid; /* flex 대신 grid를 사용하여 아이콘 중앙정렬 */
-        margin: 0 auto 10px; /* 버튼 아래 여백 및 중앙 정렬 */
-        pointer-events: auto; /* 버튼은 클릭 가능하도록 설정 */
+        background-color: rgba(0, 0, 0, 0.6); color: white;
+        border: 2px solid white; width: 80px; height: 80px;
+        border-radius: 50%; font-size: 24px; cursor: pointer;
+        place-content: center; display: grid;
+        margin: 0 auto 10px; pointer-events: auto;
     }
     .replay-text {
-        color: white;
-        font-size: 1.1em;
-        font-weight: bold;
-        pointer-events: auto; /* 텍스트도 클릭 가능하도록 설정 */
+        color: white; font-size: 1.1em;
+        font-weight: bold; pointer-events: auto;
     }
 </style>
 </head>
@@ -94,28 +80,28 @@
             </div>
         </div>
         <div class="slide">
-            <video id="video-1" src="얼음_추출_영상_생성.mp4" muted playsinline></video>
+            <video id="video-1" src="video-2.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper">
                 <button class="replay-btn">↻</button>
                 <div class="replay-text">다시보기</div>
             </div>
         </div>
         <div class="slide">
-            <video id="video-2" src="얼음_추출_영상_생성.mp4" muted playsinline></video>
+            <video id="video-2" src="video-3.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper">
                 <button class="replay-btn">↻</button>
                 <div class="replay-text">다시보기</div>
             </div>
         </div>
         <div class="slide">
-            <video id="video-3" src="얼음_추출_영상_생성.mp4" muted playsinline></video>
+            <video id="video-3" src="video-4.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper">
                 <button class="replay-btn">↻</button>
                 <div class="replay-text">다시보기</div>
             </div>
         </div>
         <div class="slide">
-            <video id="video-4" src="얼음_추출_영상_생성.mp4" muted playsinline></video>
+            <video id="video-4" src="video-5.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper">
                 <button class="replay-btn">↻</button>
                 <div class="replay-text">다시보기</div>
@@ -132,14 +118,14 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const buttonWrapper = document.querySelector('.button-wrapper'); // ✨ 버튼 영역 선택
     const sliderWrapper = document.querySelector('.slider-wrapper');
-    const slides = document.querySelectorAll('.slide');
     const videos = document.querySelectorAll('.slide video');
     const prevBtn = document.querySelector('.prev-btn');
     const nextBtn = document.querySelector('.next-btn');
     const restartBtn = document.querySelector('.restart-btn');
-    const replayBtnWrappers = document.querySelectorAll('.replay-btn-wrapper'); // ✨ 다시보기 버튼 텍스트 포함 래퍼 선택
-    const replayBtns = document.querySelectorAll('.replay-btn'); // ✨ 실제 버튼만 선택
+    const replayBtnWrappers = document.querySelectorAll('.replay-btn-wrapper');
+    const replayBtns = document.querySelectorAll('.replay-btn');
     
     let currentIndex = 0;
     const totalSlides = videos.length;
@@ -148,15 +134,18 @@ document.addEventListener('DOMContentLoaded', function() {
         prevBtn.classList.remove('show');
         nextBtn.classList.remove('show');
         restartBtn.classList.remove('show');
-        replayBtnWrappers.forEach(wrapper => wrapper.style.display = 'none'); // ✨ 다시보기 래퍼 전체 숨기기
+        replayBtnWrappers.forEach(wrapper => wrapper.style.display = 'none');
     }
 
     function updateButtonVisibility() {
         hideAllButtons();
-        replayBtnWrappers[currentIndex].style.display = 'block'; // ✨ 현재 영상의 다시보기 래퍼만 표시 (block으로 변경)
+        replayBtnWrappers[currentIndex].style.display = 'block';
         
+        buttonWrapper.classList.remove('single-right'); // ✨ 오른쪽 정렬 클래스 초기화
+
         if (currentIndex === 0) {
             nextBtn.classList.add('show');
+            buttonWrapper.classList.add('single-right'); // ✨ 버튼이 하나일 때 오른쪽 정렬 클래스 추가
         } else if (currentIndex > 0 && currentIndex < totalSlides - 1) {
             prevBtn.classList.add('show');
             nextBtn.classList.add('show');
@@ -191,11 +180,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    replayBtns.forEach((btn, index) => { // ✨ 실제 버튼에 이벤트 리스너 추가
+    replayBtns.forEach((btn, index) => {
         btn.addEventListener('click', () => {
             if(index === currentIndex) {
+                // ✨ 하단 이동 버튼 숨기기
+                prevBtn.classList.remove('show');
+                nextBtn.classList.remove('show');
+                restartBtn.classList.remove('show');
+
+                // 다시보기 버튼 숨기고 영상 재생
+                replayBtnWrappers[currentIndex].style.display = 'none';
                 videos[currentIndex].play();
-                replayBtnWrappers[currentIndex].style.display = 'none'; // ✨ 래퍼 전체 숨기기
             }
         });
     });
