@@ -18,24 +18,26 @@
     .slider-btn:hover { background-color: white; color: black; }
     .restart-btn { background-color: #007bff; border-color: #007bff; }
     .replay-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 20; display: none; pointer-events: none; }
-    
-    /* --- ✨ 수정된 '다시보기' 버튼 스타일 --- */
-    .replay-btn {
-        background-color: rgba(0, 0, 0, 0.6); 
-        color: white;
-        border: 2px solid white; 
-        width: 60px; /* ✨ 80px에서 60px로 변경 */
-        height: 60px; /* ✨ 80px에서 60px로 변경 */
-        border-radius: 50%; 
-        font-size: 20px; /* 아이콘 크기 조절 */
-        cursor: pointer; 
-        place-content: center; 
-        display: grid; 
-        margin: 0 auto 10px; 
-        pointer-events: auto;
-    }
-
+    .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
     .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
+
+    /* --- ✨ 새로 추가된 만족도 평가 스타일 --- */
+    .satisfaction-rating {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 5px; /* 별 사이 간격 */
+        pointer-events: auto; /* 별 클릭 가능하게 */
+    }
+    .satisfaction-rating .star {
+        font-size: 30px; /* 별 크기 */
+        color: #bbb; /* 기본 별 색상 */
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .satisfaction-rating .star.selected {
+        color: #ffc107; /* 선택된 별 색상 (노란색) */
+    }
 </style>
 </head>
 <body>
@@ -60,7 +62,17 @@
         </div>
         <div class="slide">
             <video id="video-4" src="2번영상.mp4" muted playsinline></video>
-            <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
+            <div class="replay-btn-wrapper">
+                <button class="replay-btn">↻</button>
+                <div class="replay-text">다시보기</div>
+                <div class="satisfaction-rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+            </div>
         </div>
     </div>
     <div class="button-wrapper">
@@ -70,7 +82,6 @@
 </div>
 
 <script>
-// JavaScript는 변경 사항 없습니다.
 document.addEventListener('DOMContentLoaded', function() {
     const sliderWrapper = document.querySelector('.slider-wrapper');
     const videos = document.querySelectorAll('.slide video');
@@ -79,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const restartBtn = document.querySelector('.restart-btn');
     const replayBtnWrappers = document.querySelectorAll('.replay-btn-wrapper');
     const replayBtns = document.querySelectorAll('.replay-btn');
+    const satisfactionRatings = document.querySelectorAll('.satisfaction-rating'); // ✨ 만족도 평가 섹션 선택
     let currentIndex = 0;
     const totalSlides = videos.length;
 
@@ -90,6 +102,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateButtonVisibility() {
         hideAllButtons();
         replayBtnWrappers[currentIndex].style.display = 'block';
+
+        // ✨ 마지막 슬라이드일 때만 만족도 평가 활성화 및 별 초기화
+        if (currentIndex === totalSlides - 1) {
+            const currentStars = satisfactionRatings[currentIndex].querySelectorAll('.star');
+            currentStars.forEach(star => star.classList.remove('selected')); // 초기화
+        }
+
         if (currentIndex === 0) {
             nextBtn.classList.add('show');
         } else if (currentIndex > 0 && currentIndex < totalSlides - 1) {
@@ -124,6 +143,58 @@ document.addEventListener('DOMContentLoaded', function() {
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
     restartBtn.addEventListener('click', () => { goToSlide(0); });
     goToSlide(0);
+
+    // ✨ --- 새로 추가된 만족도 평가 스크립트 --- ✨
+    satisfactionRatings.forEach((ratingContainer, slideIndex) => {
+        const stars = ratingContainer.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                if (slideIndex === totalSlides - 1) { // 마지막 슬라이드에서만 작동
+                    const selectedRating = this.dataset.rating;
+                    console.log(`선택된 만족도: ${selectedRating}점`);
+                    
+                    // 선택된 별까지 색상 변경
+                    stars.forEach(s => {
+                        if (s.dataset.rating <= selectedRating) {
+                            s.classList.add('selected');
+                        } else {
+                            s.classList.remove('selected');
+                        }
+                    });
+                    alert(`만족도 ${selectedRating}점을 주셔서 감사합니다!`); // 알림 메시지
+                }
+            });
+            // 마우스 오버/아웃 효과 (모바일에서는 잘 작동 안 할 수 있음)
+            star.addEventListener('mouseover', function() {
+                if (slideIndex === totalSlides - 1) {
+                    stars.forEach(s => {
+                        if (s.dataset.rating <= this.dataset.rating) {
+                            s.style.color = '#ffeb3b'; // 호버 색상
+                        } else {
+                            s.style.color = '#bbb';
+                        }
+                    });
+                }
+            });
+            star.addEventListener('mouseout', function() {
+                if (slideIndex === totalSlides - 1) {
+                    let currentSelectedRating = 0;
+                    stars.forEach(s => {
+                        if (s.classList.contains('selected')) {
+                            currentSelectedRating = Math.max(currentSelectedRating, parseInt(s.dataset.rating));
+                        }
+                    });
+                    stars.forEach(s => {
+                        if (s.dataset.rating <= currentSelectedRating) {
+                            s.style.color = '#ffc107'; // 선택된 색상 유지
+                        } else {
+                            s.style.color = '#bbb'; // 기본 색상
+                        }
+                    });
+                }
+            });
+        });
+    });
 });
 </script>
 
