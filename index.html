@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>필터 교체 방법</title>
+<title>인터랙티브 비디오 슬라이더</title>
 <style>
     /* 기존 스타일 */
     body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
@@ -21,64 +21,46 @@
     .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
     .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
 
-    /* --- ✨ 0.5점 단위 별점 스타일 --- */
+    /* --- ✨ 수정된 0.5점 단위 별점 스타일 --- */
     .satisfaction-rating {
         margin-top: 20px;
-        display: inline-flex; /* flex-direction: row; 와 유사 */
-        position: relative;
-        unicode-bidi: bidi-override; /* 텍스트 방향을 재정의 */
-        direction: rtl; /* 별이 오른쪽부터 채워지도록 */
-        gap: 0px; /* 별 사이 간격 없음 */
+        display: inline-flex;
+        direction: rtl;
         pointer-events: auto;
-        /* 기본적으로 별점 컨테이너의 너비가 너무 작아 모바일에서 클릭하기 어려울 수 있으므로
-           명시적인 너비를 주어 클릭 영역을 확보합니다. */
-        width: 160px; /* 별 5개 (30px * 5) + 패딩 */
-        height: 30px; /* 별 높이와 동일 */
-        overflow: hidden; /* 오버플로우 숨김 */
     }
     .satisfaction-rating input {
-        display: none; /* 실제 input 라디오 버튼 숨김 */
+        display: none;
     }
     .satisfaction-rating label {
         display: block;
         cursor: pointer;
-        width: 16px; /* 반쪽 별 영역 */
-        height: 30px; /* 별 높이와 동일 */
+        width: 16px;
+        height: 30px;
         overflow: hidden;
-        font-size: 30px; /* 별 폰트 크기 */
-        line-height: 1; /* 줄 높이 */
+        font-size: 30px;
+        line-height: 1;
         position: relative;
         text-shadow: 0 0 1px #888;
-        color: #bbb; /* 기본 별 색상 */
-        float: right; /* 별이 오른쪽부터 정렬 */
+        color: #bbb;
     }
     .satisfaction-rating label::before {
-        content: '★'; /* 빈 별 */
+        content: '★';
         position: absolute;
         left: 0;
         top: 0;
-        width: 32px; /* 전체 별의 너비 */
-        color: #bbb; /* 기본 색상 */
+        width: 32px;
+        color: #bbb;
     }
-    /* 반쪽 별 표시 */
     .satisfaction-rating label.half::before {
         content: '★';
-        width: 16px; /* 반쪽 별의 너비 */
+        width: 16px;
         overflow: hidden;
-        color: #ffc107; /* 채워질 색상 */
+        color: #ffc107;
     }
-
-    /* 선택되거나 호버된 별의 색상 */
     .satisfaction-rating input:checked ~ label::before,
     .satisfaction-rating label:hover ~ label::before,
     .satisfaction-rating label:hover::before {
-        color: #ffc107; /* 채워진 별 색상 */
-    }
-    /* 호버 시 반쪽 별의 색상 */
-    .satisfaction-rating input:checked ~ label.half::before,
-    .satisfaction-rating label.half:hover ~ label.half::before,
-    .satisfaction-rating label.half:hover::before {
-        color: #ffc107; /* 채워진 색상 */
+        color: #ffc107;
     }
 </style>
 </head>
@@ -99,7 +81,6 @@
             <div class="replay-btn-wrapper">
                 <button class="replay-btn">↻</button>
                 <div class="replay-text">다시보기</div>
-                
                 <form class="satisfaction-rating" id="ratingForm">
                     <input type="radio" id="star50" name="rating" value="5.0" /><label for="star50"></label>
                     <input type="radio" id="star45" name="rating" value="4.5" /><label for="star45" class="half"></label>
@@ -130,41 +111,48 @@ document.addEventListener('DOMContentLoaded', function() {
     const restartBtn = document.querySelector('.restart-btn');
     const replayBtnWrappers = document.querySelectorAll('.replay-btn-wrapper');
     const replayBtns = document.querySelectorAll('.replay-btn');
-    const ratingForm = document.getElementById('ratingForm'); // ✨ 별점 폼 선택
+    const ratingForm = document.getElementById('ratingForm');
     let currentIndex = 0;
     const totalSlides = videos.length;
-    let currentSelectedRating = 0; // 현재 선택된 별점 (0.5점 단위)
+    let currentSelectedRating = 0;
 
     function hideAllButtons() {
-        prevBtn.classList.remove('show'); nextBtn.classList.remove('show');
+        prevBtn.classList.remove('show');
+        nextBtn.classList.remove('show');
         restartBtn.classList.remove('show');
         replayBtnWrappers.forEach(wrapper => wrapper.style.display = 'none');
     }
+
     function updateButtonVisibility() {
         hideAllButtons();
         replayBtnWrappers[currentIndex].style.display = 'block';
 
-        if (currentIndex === totalSlides - 1) { // 마지막 영상일 때
-            // 별점 초기화
+        if (currentIndex === totalSlides - 1) {
             if (ratingForm) {
-                ratingForm.reset(); // 폼 초기화 (선택된 라디오 버튼 해제)
-                currentSelectedRating = 0; // 선택된 점수 초기화
+                ratingForm.reset();
+                currentSelectedRating = 0;
             }
         }
 
         if (currentIndex === 0) {
             nextBtn.classList.add('show');
         } else if (currentIndex > 0 && currentIndex < totalSlides - 1) {
-            prevBtn.classList.add('show'); nextBtn.classList.add('show');
+            prevBtn.classList.add('show');
+            nextBtn.classList.add('show');
         } else if (currentIndex === totalSlides - 1) {
-            prevBtn.classList.add('show'); restartBtn.classList.add('show');
+            prevBtn.classList.add('show');
+            restartBtn.classList.add('show');
         }
     }
+
     function goToSlide(index) {
         sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
         currentIndex = index;
-        videos.forEach(video => { video.pause(); video.currentTime = 0; });
-        hideAllButtons();
+        videos.forEach(video => {
+            video.pause();
+            video.currentTime = 0;
+        });
+        hideAllButtons(); // ✨ 이동 시 모든 버튼 숨기기
         if (videos[currentIndex]) {
             videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
         }
@@ -175,7 +163,8 @@ document.addEventListener('DOMContentLoaded', function() {
     replayBtns.forEach((btn, index) => {
         btn.addEventListener('click', () => {
             if(index === currentIndex) {
-                prevBtn.classList.remove('show'); nextBtn.classList.remove('show');
+                prevBtn.classList.remove('show');
+                nextBtn.classList.remove('show');
                 restartBtn.classList.remove('show');
                 replayBtnWrappers[currentIndex].style.display = 'none';
                 videos[currentIndex].play();
@@ -185,9 +174,14 @@ document.addEventListener('DOMContentLoaded', function() {
     nextBtn.addEventListener('click', () => { if (currentIndex < totalSlides - 1) { goToSlide(currentIndex + 1); } });
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
     restartBtn.addEventListener('click', () => { goToSlide(0); });
-    goToSlide(0);
+    
+    // ✨ --- 페이지 첫 로드 시 실행 로직 수정 --- ✨
+    // goToSlide(0); // 이 줄을 아래 내용으로 대체
+    hideAllButtons(); // ✨ 페이지 로드 시 모든 버튼 숨기기
+    if (videos[currentIndex]) {
+        videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
+    }
 
-    // ✨ --- 0.5점 단위 별점 스크립트 --- ✨
     if (ratingForm) {
         ratingForm.addEventListener('change', function(event) {
             if (currentIndex === totalSlides - 1 && event.target.name === 'rating') {
@@ -195,9 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(`만족도 ${currentSelectedRating}점을 주셔서 감사합니다!`);
             }
         });
-
-        // 초기화 시 선택된 별점도 리셋
-        updateButtonVisibility(); // DOMContentLoaded 시 한 번 호출
+        updateButtonVisibility();
     }
 });
 </script>
