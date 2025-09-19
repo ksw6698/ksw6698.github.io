@@ -1,38 +1,125 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>나의 첫 웹사이트</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f8ff;
-        }
-        .container {
-            text-align: center;
-            background-color: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            color: #666;
-            font-size: 1.2em;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>인터랙티브 비디오 슬라이더</title>
+<style>
+    /* 스타일 코드는 이전과 동일합니다 */
+    body { font-family: sans-serif; }
+    .slider-container { width: 100%; max-width: 900px; margin: 40px auto; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); background-color: #000; }
+    .slider-wrapper { display: flex; transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+    .slide { min-width: 100%; box-sizing: border-box; }
+    .slide video { width: 100%; display: block; }
+    .button-wrapper { position: absolute; bottom: 25px; left: 0; width: 100%; padding: 0 25px; box-sizing: border-box; display: flex; justify-content: space-between; z-index: 10; pointer-events: none; }
+    .slider-btn { background-color: rgba(0, 0, 0, 0.5); color: white; border: 1px solid white; padding: 12px 24px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 30px; transition: all 0.3s ease; opacity: 0; transform: translateY(20px); pointer-events: auto; }
+    .slider-btn.show { opacity: 1; transform: translateY(0); }
+    .slider-btn:hover { background-color: white; color: black; }
+    .prev-btn {}
+    .next-btn {}
+    .restart-btn { background-color: #007bff; border-color: #007bff; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎉 환영합니다! 🎉</h1>
-        <p>GitHub Pages로 만든 저의 첫 웹사이트입니다.</p>
+
+<div class="slider-container">
+    <div class="slider-wrapper">
+        <div class="slide">
+            <video id="video-0" src="https://videos.pexels.com/video-files/3846648/3846648-hd_1920_1080_25fps.mp4" muted playsinline></video>
+        </div>
+        <div class="slide">
+            <video id="video-1" src="https://videos.pexels.com/video-files/4784400/4784400-hd_1920_1080_24fps.mp4" muted playsinline></video>
+        </div>
+        <div class="slide">
+            <video id="video-2" src="https://videos.pexels.com/video-files/2864235/2864235-hd_1920_1080_25fps.mp4" muted playsinline></video>
+        </div>
+        <div class="slide">
+            <video id="video-3" src="https://videos.pexels.com/video-files/3996561/3996561-hd_1920_1080_25fps.mp4" muted playsinline></video>
+        </div>
+        <div class="slide">
+            <video id="video-4" src="https://videos.pexels.com/video-files/4434240/4434240-hd_1920_1080_25fps.mp4" muted playsinline></video>
+        </div>
     </div>
+
+    <div class="button-wrapper">
+        <button class="slider-btn prev-btn">❮ 이전으로 가기</button>
+        <button class="slider-btn next-btn">다음으로 이동 ❯</button>
+        <button class="slider-btn restart-btn">처음부터 다시 보기 ↻</button>
+    </div>
+</div>
+
+<script>
+    /* 스크립트 코드는 이전과 동일합니다 */
+    document.addEventListener('DOMContentLoaded', function() {
+        const sliderWrapper = document.querySelector('.slider-wrapper');
+        const videos = document.querySelectorAll('.slide video');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        const restartBtn = document.querySelector('.restart-btn');
+        let currentIndex = 0;
+        const totalSlides = videos.length;
+
+        function hideAllButtons() {
+            prevBtn.classList.remove('show');
+            nextBtn.classList.remove('show');
+            restartBtn.classList.remove('show');
+        }
+
+        function updateButtonVisibility() {
+            hideAllButtons();
+            if (currentIndex === 0) {
+                nextBtn.classList.add('show');
+            } else if (currentIndex > 0 && currentIndex < totalSlides - 1) {
+                prevBtn.classList.add('show');
+                nextBtn.classList.add('show');
+            } else if (currentIndex === totalSlides - 1) {
+                prevBtn.classList.add('show');
+                restartBtn.classList.add('show');
+            }
+        }
+
+        function goToSlide(index) {
+            sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
+            currentIndex = index;
+            videos.forEach(video => {
+                video.pause();
+                video.currentTime = 0;
+            });
+            if (videos[currentIndex]) {
+                videos[currentIndex].play().catch(error => {
+                    console.log("Autoplay was prevented: ", error);
+                });
+            }
+            hideAllButtons();
+        }
+
+        videos.forEach((video, index) => {
+            video.addEventListener('ended', () => {
+                if(index === currentIndex) {
+                    updateButtonVisibility();
+                }
+            });
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < totalSlides - 1) {
+                goToSlide(currentIndex + 1);
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                goToSlide(currentIndex - 1);
+            }
+        });
+
+        restartBtn.addEventListener('click', () => {
+            goToSlide(0);
+        });
+
+        goToSlide(0);
+    });
+</script>
+
 </body>
 </html>
