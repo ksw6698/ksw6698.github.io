@@ -18,7 +18,23 @@
     .slider-btn:hover { background-color: white; color: black; }
     .restart-btn { background-color: #007bff; border-color: #007bff; }
     .replay-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 20; display: none; pointer-events: none; }
-    .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 80px; height: 80px; border-radius: 50%; font-size: 24px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
+    
+    /* --- ✨ 수정된 '다시보기' 버튼 스타일 --- */
+    .replay-btn {
+        background-color: rgba(0, 0, 0, 0.6); 
+        color: white;
+        border: 2px solid white; 
+        width: 60px; /* ✨ 80px에서 60px로 변경 */
+        height: 60px; /* ✨ 80px에서 60px로 변경 */
+        border-radius: 50%; 
+        font-size: 20px; /* 아이콘 크기 조절 */
+        cursor: pointer; 
+        place-content: center; 
+        display: grid; 
+        margin: 0 auto 10px; 
+        pointer-events: auto;
+    }
+
     .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
 </style>
 </head>
@@ -27,23 +43,23 @@
 <div class="slider-container">
     <div class="slider-wrapper">
         <div class="slide">
-            <video id="video-0" src="1번얼음.mp4" muted playsinline></video>
+            <video id="video-0" src="1번영상.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-1" src="2번얼음.mp4" muted playsinline></video>
+            <video id="video-1" src="2번영상.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-2" src="3번얼음.mp4" muted playsinline></video>
+            <video id="video-2" src="3번영상.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-3" src="1번얼음.mp4" muted playsinline></video>
+            <video id="video-3" src="1번영상.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-4" src="2번얼음.mp4" muted playsinline></video>
+            <video id="video-4" src="2번영상.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
     </div>
@@ -54,8 +70,8 @@
 </div>
 
 <script>
+// JavaScript는 변경 사항 없습니다.
 document.addEventListener('DOMContentLoaded', function() {
-    // 전체 화면 버튼 관련 JavaScript 삭제됨
     const sliderWrapper = document.querySelector('.slider-wrapper');
     const videos = document.querySelectorAll('.slide video');
     const prevBtn = document.querySelector('.prev-btn');
