@@ -2,26 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale-1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>인터랙티브 비디오 슬라이더</title>
 <style>
-    /* 전체 화면 버튼 스타일 */
-    .fullscreen-btn {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background-color: rgba(0,0,0,0.4);
-        color: white;
-        border: 1px solid white;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        cursor: pointer;
-        z-index: 50;
-        font-size: 18px;
-        display: grid;
-        place-content: center;
-    }
     /* 기존 스타일 */
     body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
     .slider-container { width: 100%; max-width: 900px; margin: 40px auto; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); background-color: #000; }
@@ -42,26 +25,25 @@
 <body>
 
 <div class="slider-container">
-    <button class="fullscreen-btn">⛶</button>
     <div class="slider-wrapper">
         <div class="slide">
-            <video id="video-0" src="1번영상.mp4" muted playsinline></video>
+            <video id="video-0" src="1번얼음.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-1" src="2번영상.mp4" muted playsinline></video>
+            <video id="video-1" src="2번얼음.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-2" src="3번영상.mp4" muted playsinline></video>
+            <video id="video-2" src="3번얼음.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-3" src="1번영상.mp4" muted playsinline></video>
+            <video id="video-3" src="1번얼음.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-4" src="2번영상.mp4" muted playsinline></video>
+            <video id="video-4" src="2번얼음.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
     </div>
@@ -73,7 +55,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const fullscreenBtn = document.querySelector('.fullscreen-btn');
+    // 전체 화면 버튼 관련 JavaScript 삭제됨
     const sliderWrapper = document.querySelector('.slider-wrapper');
     const videos = document.querySelectorAll('.slide video');
     const prevBtn = document.querySelector('.prev-btn');
@@ -84,16 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentIndex = 0;
     const totalSlides = videos.length;
 
-    fullscreenBtn.addEventListener('click', () => {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                alert(`전체 화면 모드를 사용할 수 없습니다: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    });
-    
     function hideAllButtons() {
         prevBtn.classList.remove('show'); nextBtn.classList.remove('show');
         restartBtn.classList.remove('show');
