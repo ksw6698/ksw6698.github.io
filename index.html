@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>인터랙티브 비디오 슬라이더</title>
 <style>
-    /* ✨ --- 전체 화면 버튼 스타일 --- ✨ */
+    /* 전체 화면 버튼 스타일 */
     .fullscreen-btn {
         position: absolute;
         top: 15px;
@@ -54,23 +54,23 @@
     <button class="fullscreen-btn">⛶</button>
     <div class="slider-wrapper">
         <div class="slide">
-            <video id="video-0" src="1번영상.mp4" muted playsinline></video>
+            <video id="video-0" src="얼음_추출_영상_생성.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-1" src="2번영상.mp4" muted playsinline></video>
+            <video id="video-1" src="video-2.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-2" src="3번영상.mp4" muted playsinline></video>
+            <video id="video-2" src="video-3.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-3" src="1번영상.mp4" muted playsinline></video>
+            <video id="video-3" src="video-4.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-4" src="2번영상.mp4" muted playsinline></video>
+            <video id="video-4" src="video-5.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
     </div>
@@ -82,8 +82,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const sliderContainer = document.querySelector('.slider-container'); // ✨ 슬라이더 컨테이너 선택
-    const fullscreenBtn = document.querySelector('.fullscreen-btn'); // ✨ 전체 화면 버튼 선택
+    const fullscreenBtn = document.querySelector('.fullscreen-btn');
     const sliderWrapper = document.querySelector('.slider-wrapper');
     const videos = document.querySelectorAll('.slide video');
     const prevBtn = document.querySelector('.prev-btn');
@@ -94,27 +93,61 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentIndex = 0;
     const totalSlides = videos.length;
 
-    // ✨ --- 전체 화면 기능 로직 추가 --- ✨
+    // ✨ --- 수정된 전체 화면 기능 로직 --- ✨
     fullscreenBtn.addEventListener('click', () => {
         if (!document.fullscreenElement) {
-            // 현재 전체 화면이 아닐 경우, 전체 화면으로 전환
-            sliderContainer.requestFullscreen().catch(err => {
+            // HTML 문서 전체를 전체 화면으로 전환
+            document.documentElement.requestFullscreen().catch(err => {
                 alert(`전체 화면 모드를 사용할 수 없습니다: ${err.message}`);
             });
         } else {
-            // 현재 전체 화면일 경우, 전체 화면 해제
+            // 전체 화면 해제
             document.exitFullscreen();
         }
     });
-
-    function hideAllButtons() { /* 이전과 동일 */ }
-    function updateButtonVisibility() { /* 이전과 동일 */ }
-    function goToSlide(index) { /* 이전과 동일 */ }
-    videos.forEach((video, index) => { /* 이전과 동일 */ });
-    replayBtns.forEach((btn, index) => { /* 이전과 동일 */ });
-    nextBtn.addEventListener('click', () => { /* 이전과 동일 */ });
-    prevBtn.addEventListener('click', () => { /* 이전과 동일 */ });
-    restartBtn.addEventListener('click', () => { /* 이전과 동일 */ });
+    
+    // 아래의 다른 스크립트 코드는 이전과 동일합니다.
+    function hideAllButtons() {
+        prevBtn.classList.remove('show'); nextBtn.classList.remove('show');
+        restartBtn.classList.remove('show');
+        replayBtnWrappers.forEach(wrapper => wrapper.style.display = 'none');
+    }
+    function updateButtonVisibility() {
+        hideAllButtons();
+        replayBtnWrappers[currentIndex].style.display = 'block';
+        if (currentIndex === 0) {
+            nextBtn.classList.add('show');
+        } else if (currentIndex > 0 && currentIndex < totalSlides - 1) {
+            prevBtn.classList.add('show'); nextBtn.classList.add('show');
+        } else if (currentIndex === totalSlides - 1) {
+            prevBtn.classList.add('show'); restartBtn.classList.add('show');
+        }
+    }
+    function goToSlide(index) {
+        sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
+        currentIndex = index;
+        videos.forEach(video => { video.pause(); video.currentTime = 0; });
+        hideAllButtons();
+        if (videos[currentIndex]) {
+            videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
+        }
+    }
+    videos.forEach((video, index) => {
+        video.addEventListener('ended', () => { if(index === currentIndex) { updateButtonVisibility(); } });
+    });
+    replayBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            if(index === currentIndex) {
+                prevBtn.classList.remove('show'); nextBtn.classList.remove('show');
+                restartBtn.classList.remove('show');
+                replayBtnWrappers[currentIndex].style.display = 'none';
+                videos[currentIndex].play();
+            }
+        });
+    });
+    nextBtn.addEventListener('click', () => { if (currentIndex < totalSlides - 1) { goToSlide(currentIndex + 1); } });
+    prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
+    restartBtn.addEventListener('click', () => { goToSlide(0); });
     goToSlide(0);
 });
 </script>
