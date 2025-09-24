@@ -9,16 +9,29 @@
     body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
     .main-container { width: 100%; max-width: 900px; margin: 40px auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); overflow: hidden; }
     
-    /* --- ✨ 수정된 단계별 탐색 버튼 스타일 --- */
     .step-navigation { 
         display: flex; 
         background-color: #f8f9fa; 
         padding: 10px; 
-        border-top: 1px solid #ddd; /* 상단 구분선 추가 */
+        border-top: 1px solid #ddd;
     }
     
-    .step-btn { flex-grow: 1; padding: 10px 5px; font-size: 14px; font-weight: bold; text-align: center; background-color: transparent; border: none; border-top: 3px solid transparent; /* 밑줄을 위로 이동 */ border-bottom: none; cursor: pointer; color: #888; transition: all 0.3s ease; }
-    .step-btn.active { color: #007bff; border-top-color: #007bff; /* 활성 상태의 윗줄 */ }
+    /* --- ✨ 수정된 단계별 탐색 버튼 스타일 --- */
+    .step-btn { 
+        flex-grow: 1; 
+        padding: 10px 5px; 
+        font-size: 16px; /* ✨ 14px에서 16px로 변경 */
+        font-weight: bold; 
+        text-align: center; 
+        background-color: transparent; 
+        border: none; 
+        border-top: 3px solid transparent; 
+        border-bottom: none; 
+        cursor: pointer; 
+        color: #888; 
+        transition: all 0.3s ease; 
+    }
+    .step-btn.active { color: #007bff; border-top-color: #007bff; }
     
     .slider-container { width: 100%; margin: 0; position: relative; overflow: hidden; background-color: #000; box-shadow: none; border-radius: 0; }
     .slider-wrapper { display: flex; }
@@ -45,7 +58,6 @@
 <body>
 
 <div class="main-container">
-    
     <div class="slider-container">
         <div class="slider-wrapper">
             <div class="slide">
@@ -81,7 +93,6 @@
             <div class="button-group-right"><button class="slider-btn next-btn">다음으로 이동 ❯</button><button class="slider-btn restart-btn">처음부터 다시 보기 ↻</button></div>
         </div>
     </div>
-
     <div class="step-navigation"></div>
 </div>
 
