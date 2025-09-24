@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>필터 교체 방법</title>
+<title>필터 교체 방법 샘플</title>
 <style>
-    /* CSS 스타일은 이전과 완전히 동일합니다. (변경 없음) */
+    /* 기존 스타일 */
     body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
     .slider-container { width: 100%; max-width: 900px; margin: 40px auto; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); background-color: #000; }
     .slider-wrapper { display: flex; }
@@ -20,9 +20,23 @@
     .replay-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 20; display: none; pointer-events: none; }
     .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
     .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
-    .satisfaction-rating { margin-top: 20px; display: flex; justify-content: center; gap: 5px; pointer-events: auto; }
-    .satisfaction-rating .star { font-size: 30px; color: #bbb; cursor: pointer; transition: color 0.2s; }
-    .satisfaction-rating .star.selected { color: #ffc107; }
+    .satisfaction-rating { margin-top: 20px; display: inline-flex; direction: rtl; pointer-events: auto; }
+    .satisfaction-rating input { display: none; }
+    .satisfaction-rating label { display: block; cursor: pointer; width: 16px; height: 30px; overflow: hidden; font-size: 30px; line-height: 1; position: relative; text-shadow: 0 0 1px #888; color: #bbb; }
+    .satisfaction-rating label::before { content: '★'; position: absolute; left: 0; top: 0; width: 32px; color: #bbb; }
+    .satisfaction-rating label.half::before { content: '★'; width: 16px; overflow: hidden; color: #ffc107; }
+    .satisfaction-rating input:checked ~ label::before,
+    .satisfaction-rating label:hover ~ label::before,
+    .satisfaction-rating label:hover::before { color: #ffc107; }
+
+    /* --- ✨ 새로 추가된 텍스트 영역 스타일 --- */
+    .additional-text-area {
+        max-width: 900px; /* 슬라이더 최대 너비와 동일하게 */
+        margin: 20px auto; /* 위쪽 여백 및 중앙 정렬 */
+        padding: 0 20px; /* 좌우 여백 */
+        box-sizing: border-box;
+        text-align: center; /* 텍스트 중앙 정렬 */
+    }
 </style>
 </head>
 <body>
@@ -30,25 +44,30 @@
 <div class="slider-container">
     <div class="slider-wrapper">
         <div class="slide">
-            <video id="video-0" src="1번영상.mp4" muted playsinline></video>
+            <video id="video-0" src="ice-extraction.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-1" src="2번영상.mp4" muted playsinline></video>
+            <video id="video-1" src="ice-extraction.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
         </div>
         <div class="slide">
-            <video id="video-2" src="3번영상.mp4" muted playsinline></video>
+            <video id="video-2" src="ice-extraction.mp4" muted playsinline></video>
             <div class="replay-btn-wrapper">
                 <button class="replay-btn">↻</button>
                 <div class="replay-text">다시보기</div>
-                <div class="satisfaction-rating">
-                    <span class="star" data-rating="1">★</span>
-                    <span class="star" data-rating="2">★</span>
-                    <span class="star" data-rating="3">★</span>
-                    <span class="star" data-rating="4">★</span>
-                    <span class="star" data-rating="5">★</span>
-                </div>
+                <form class="satisfaction-rating" id="ratingForm">
+                    <input type="radio" id="star50" name="rating" value="5.0" /><label for="star50"></label>
+                    <input type="radio" id="star45" name="rating" value="4.5" /><label for="star45" class="half"></label>
+                    <input type="radio" id="star40" name="rating" value="4.0" /><label for="star40"></label>
+                    <input type="radio" id="star35" name="rating" value="3.5" /><label for="star35" class="half"></label>
+                    <input type="radio" id="star30" name="rating" value="3.0" /><label for="star30"></label>
+                    <input type="radio" id="star25" name="rating" value="2.5" /><label for="star25" class="half"></label>
+                    <input type="radio" id="star20" name="rating" value="2.0" /><label for="star20"></label>
+                    <input type="radio" id="star15" name="rating" value="1.5" /><label for="star15" class="half"></label>
+                    <input type="radio" id="star10" name="rating" value="1.0" /><label for="star10"></label>
+                    <input type="radio" id="star05" name="rating" value="0.5" /><label for="star05" class="half"></label>
+                </form>
             </div>
         </div>
     </div>
@@ -58,10 +77,15 @@
     </div>
 </div>
 
+<div class="additional-text-area">
+    <h2>추가 정보 섹션</h2>
+    <p>이곳에 원하시는 텍스트를 자유롭게 입력하세요. 동영상에 대한 부가 설명이나 공지사항 등을 적을 수 있습니다.</p>
+</div>
+
 <script>
 // JavaScript는 변경 사항 없습니다.
-// 영상 개수가 바뀌어도 자동으로 인식하여 정상 작동합니다.
 document.addEventListener('DOMContentLoaded', function() {
+    // ... (이전과 동일한 스크립트 내용)
     const sliderWrapper = document.querySelector('.slider-wrapper');
     const videos = document.querySelectorAll('.slide video');
     const prevBtn = document.querySelector('.prev-btn');
@@ -69,38 +93,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const restartBtn = document.querySelector('.restart-btn');
     const replayBtnWrappers = document.querySelectorAll('.replay-btn-wrapper');
     const replayBtns = document.querySelectorAll('.replay-btn');
-    const satisfactionRatings = document.querySelectorAll('.satisfaction-rating');
+    const ratingForm = document.getElementById('ratingForm');
     let currentIndex = 0;
     const totalSlides = videos.length;
+    let currentSelectedRating = 0;
 
     function hideAllButtons() {
-        prevBtn.classList.remove('show'); nextBtn.classList.remove('show');
+        prevBtn.classList.remove('show');
+        nextBtn.classList.remove('show');
         restartBtn.classList.remove('show');
         replayBtnWrappers.forEach(wrapper => wrapper.style.display = 'none');
     }
     function updateButtonVisibility() {
         hideAllButtons();
         replayBtnWrappers[currentIndex].style.display = 'block';
-
-        if (currentIndex === totalSlides - 1) { // 마지막 영상일 때
-            const currentStars = replayBtnWrappers[currentIndex].querySelector('.satisfaction-rating .star');
-            if (currentStars) {
-                currentStars.parentElement.querySelectorAll('.star').forEach(star => star.classList.remove('selected'));
+        if (currentIndex === totalSlides - 1) {
+            if (ratingForm) {
+                ratingForm.reset();
+                currentSelectedRating = 0;
             }
         }
-
         if (currentIndex === 0) {
             nextBtn.classList.add('show');
         } else if (currentIndex > 0 && currentIndex < totalSlides - 1) {
-            prevBtn.classList.add('show'); nextBtn.classList.add('show');
+            prevBtn.classList.add('show');
+            nextBtn.classList.add('show');
         } else if (currentIndex === totalSlides - 1) {
-            prevBtn.classList.add('show'); restartBtn.classList.add('show');
+            prevBtn.classList.add('show');
+            restartBtn.classList.add('show');
         }
     }
     function goToSlide(index) {
         sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
         currentIndex = index;
-        videos.forEach(video => { video.pause(); video.currentTime = 0; });
+        videos.forEach(video => {
+            video.pause();
+            video.currentTime = 0;
+        });
         hideAllButtons();
         if (videos[currentIndex]) {
             videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
@@ -112,7 +141,8 @@ document.addEventListener('DOMContentLoaded', function() {
     replayBtns.forEach((btn, index) => {
         btn.addEventListener('click', () => {
             if(index === currentIndex) {
-                prevBtn.classList.remove('show'); nextBtn.classList.remove('show');
+                prevBtn.classList.remove('show');
+                nextBtn.classList.remove('show');
                 restartBtn.classList.remove('show');
                 replayBtnWrappers[currentIndex].style.display = 'none';
                 videos[currentIndex].play();
@@ -122,28 +152,19 @@ document.addEventListener('DOMContentLoaded', function() {
     nextBtn.addEventListener('click', () => { if (currentIndex < totalSlides - 1) { goToSlide(currentIndex + 1); } });
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
     restartBtn.addEventListener('click', () => { goToSlide(0); });
-    goToSlide(0);
-
-    satisfactionRatings.forEach((ratingContainer, slideIndex) => {
-        const stars = ratingContainer.querySelectorAll('.star');
-        stars.forEach(star => {
-            star.addEventListener('click', function() {
-                if (slideIndex === totalSlides - 1) {
-                    const selectedRating = this.dataset.rating;
-                    stars.forEach(s => {
-                        if (s.dataset.rating <= selectedRating) {
-                            s.classList.add('selected');
-                        } else {
-                            s.classList.remove('selected');
-                        }
-                    });
-                    alert(`만족도 ${selectedRating}점을 주셔서 감사합니다!`);
-                }
-            });
-            star.addEventListener('mouseover', function() { /* 이전과 동일 */ });
-            star.addEventListener('mouseout', function() { /* 이전과 동일 */ });
+    hideAllButtons();
+    if (videos[currentIndex]) {
+        videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
+    }
+    if (ratingForm) {
+        ratingForm.addEventListener('change', function(event) {
+            if (currentIndex === totalSlides - 1 && event.target.name === 'rating') {
+                currentSelectedRating = parseFloat(event.target.value);
+                alert(`만족도 ${currentSelectedRating}점을 주셔서 감사합니다!`);
+            }
         });
-    });
+        updateButtonVisibility();
+    }
 });
 </script>
 
