@@ -1,477 +1,239 @@
 <!DOCTYPE html>
-
 <html lang="ko">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>필터 교체 방법 샘플</title>
-
 <style>
-
-    /* 기존 스타일 */
-
-    body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
-
-    .main-container { width: 100%; max-width: 900px; margin: 40px auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); overflow: hidden; }
-
-    .step-navigation { display: flex; background-color: #f8f9fa; padding: 10px; border-top: 1px solid #ddd; }
-
-    .step-btn { flex-grow: 1; padding: 10px 5px; font-size: 16px; font-weight: bold; text-align: center; background-color: transparent; border: none; border-top: 3px solid transparent; border-bottom: none; cursor: pointer; color: #888; transition: all 0.3s ease; }
-
-    .step-btn.active { color: #007bff; border-top-color: #007bff; }
-
-    .slider-container { width: 100%; margin: 0; position: relative; overflow: hidden; background-color: #000; box-shadow: none; border-radius: 0; }
-
-    .slider-wrapper { display: flex; }
-
-    .slide { min-width: 100%; box-sizing: border-box; position: relative; }
-
-    .slide video { width: 100%; display: block; }
-
-    .button-wrapper { position: absolute; bottom: 25px; left: 0; width: 100%; padding: 0 25px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
-
-    .button-group-left, .button-group-right { display: flex; gap: 15px; pointer-events: auto; }
-
-    .slider-btn { background-color: rgba(0, 0, 0, 0.5); color: white; border: 1px solid white; padding: 12px 24px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 30px; transition: all 0.3s ease; opacity: 0; transform: translateY(20px); pointer-events: auto; display: none; }
-
-    .slider-btn.show { opacity: 1; transform: translateY(0); display: block; }
-
-    .slider-btn:hover { background-color: white; color: black; }
-
-    .restart-btn { background-color: #007bff; border-color: #007bff; }
-
-    .replay-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 20; display: none; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-
-    .replay-btn-wrapper.show { display: flex; }
-
-    .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
-
-    .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
-
-    
-
-    /* --- ✨ 수정된 1점 단위 별점 스타일 --- */
-
-    .satisfaction-rating {
-
-        margin-top: 20px;
-
-        display: flex;
-
-        justify-content: center;
-
-        gap: 5px;
-
-        pointer-events: auto;
-
-    }
-
-    .satisfaction-rating .star {
-
-        font-size: 30px;
-
-        color: #bbb;
-
-        cursor: pointer;
-
-        transition: color 0.2s;
-
-    }
-
-    .satisfaction-rating .star.selected,
-
-    .satisfaction-rating .star:hover,
-
-    .satisfaction-rating .star:hover ~ .star {
-
-        color: #ffc107;
-
-    }
-
-    .satisfaction-rating:hover .star:hover ~ .star {
-
-        color: #bbb;
-
-    }
-
-    
-
-    .additional-text-area { max-width: 900px; margin: 20px auto; padding: 0 20px; box-sizing: border-box; text-align: center; font-size: 1.1em; }
-
+    /* 기존 스타일 */
+    body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
+    .main-container { width: 100%; max-width: 900px; margin: 40px auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); overflow: hidden; }
+    .step-navigation { display: flex; background-color: #f8f9fa; padding: 10px; border-top: 1px solid #ddd; }
+    .step-btn { flex-grow: 1; padding: 10px 5px; font-size: 16px; font-weight: bold; text-align: center; background-color: transparent; border: none; border-top: 3px solid transparent; border-bottom: none; cursor: pointer; color: #888; transition: all 0.3s ease; }
+    .step-btn.active { color: #007bff; border-top-color: #007bff; }
+    .slider-container { width: 100%; margin: 0; position: relative; overflow: hidden; background-color: #000; box-shadow: none; border-radius: 0; }
+    .slider-wrapper { display: flex; }
+    .slide { min-width: 100%; box-sizing: border-box; position: relative; }
+    .slide video { width: 100%; display: block; }
+    .button-wrapper { position: absolute; bottom: 25px; left: 0; width: 100%; padding: 0 25px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
+    .button-group-left, .button-group-right { display: flex; gap: 15px; pointer-events: auto; }
+    .slider-btn { background-color: rgba(0, 0, 0, 0.5); color: white; border: 1px solid white; padding: 12px 24px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 30px; transition: all 0.3s ease; opacity: 0; transform: translateY(20px); pointer-events: auto; display: none; }
+    .slider-btn.show { opacity: 1; transform: translateY(0); display: block; }
+    .slider-btn:hover { background-color: white; color: black; }
+    .restart-btn { background-color: #007bff; border-color: #007bff; }
+    .replay-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 20; display: none; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+    .replay-btn-wrapper.show { display: flex; }
+    .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
+    .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
+    
+    /* --- ✨ 수정된 1점 단위 별점 스타일 --- */
+    .satisfaction-rating {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        pointer-events: auto;
+    }
+    .satisfaction-rating .star {
+        font-size: 30px;
+        color: #bbb;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .satisfaction-rating .star.selected,
+    .satisfaction-rating .star:hover,
+    .satisfaction-rating .star:hover ~ .star {
+        color: #ffc107;
+    }
+    .satisfaction-rating:hover .star:hover ~ .star {
+        color: #bbb;
+    }
+    
+    .additional-text-area { max-width: 900px; margin: 20px auto; padding: 0 20px; box-sizing: border-box; text-align: center; font-size: 1.1em; }
 </style>
-
 </head>
-
 <body>
 
-
-
 <div class="main-container">
-
-    <div class="slider-container">
-
-        <div class="slider-wrapper">
-
-            <div class="slide">
-
-                <video id="video-0" src="1번영상.mp4" muted playsinline></video>
-
-                <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
-
-            </div>
-
-            <div class="slide">
-
-                <video id="video-1" src="2번영상.mp4" muted playsinline></video>
-
-                <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
-
-            </div>
-
-            <div class="slide">
-
-                <video id="video-2" src="3번영상.mp4" muted playsinline></video>
-
-                <div class="replay-btn-wrapper">
-
-                    <button class="replay-btn">↻</button>
-
-                    <div class="replay-text">다시보기</div>
-
-                    <div class="satisfaction-rating">
-
-                        <span class="star" data-rating="5">★</span>
-
-                        <span class="star" data-rating="4">★</span>
-
-                        <span class="star" data-rating="3">★</span>
-
-                        <span class="star" data-rating="2">★</span>
-
-                        <span class="star" data-rating="1">★</span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="button-wrapper">
-
-            <div class="button-group-left"><button class="slider-btn prev-btn">❮ 이전으로 가기</button></div>
-
-            <div class="button-group-right"><button class="slider-btn next-btn">다음으로 이동 ❯</button><button class="slider-btn restart-btn">처음부터 다시 보기 ↻</button></div>
-
-        </div>
-
-    </div>
-
-    <div class="step-navigation"></div>
-
+    <div class="slider-container">
+        <div class="slider-wrapper">
+            <div class="slide">
+                <video id="video-0" src="1번영상.mp4" muted playsinline></video>
+                <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
+            </div>
+            <div class="slide">
+                <video id="video-1" src="2번영상.mp4" muted playsinline></video>
+                <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
+            </div>
+            <div class="slide">
+                <video id="video-2" src="3번영상.mp4" muted playsinline></video>
+                <div class="replay-btn-wrapper">
+                    <button class="replay-btn">↻</button>
+                    <div class="replay-text">다시보기</div>
+                    <div class="satisfaction-rating">
+                        <span class="star" data-rating="5">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="1">★</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="button-wrapper">
+            <div class="button-group-left"><button class="slider-btn prev-btn">❮ 이전으로 가기</button></div>
+            <div class="button-group-right"><button class="slider-btn next-btn">다음으로 이동 ❯</button><button class="slider-btn restart-btn">처음부터 다시 보기 ↻</button></div>
+        </div>
+    </div>
+    <div class="step-navigation"></div>
 </div>
-
-
 
 <div class="additional-text-area">
-
-    <p id="additional-description"></p>
-
+    <p id="additional-description"></p>
 </div>
 
-
-
 <script>
-
 document.addEventListener('DOMContentLoaded', function() {
-
-    
-
-    const stepLabels = ["1단계: 제품 커버 열기", "2단계: 필터 커버 열기", "3단계: 기존 필터 분리"];
-
-    const textData = [
-
-        { description: "상단 제품 커버의 표시된 부분을 잡고 힘껏 밀어 분리해주세요." },
-
-        { description: "필터 커버의 PUSH 부분을 눌러 커버를 열어주세요." },
-
-        { description: "필터를 뒤로 힘껏 밀어 분리해주세요." }
-
-    ];
-
-
-
-    const additionalDescription = document.getElementById('additional-description');
-
-    const stepNavigation = document.querySelector('.step-navigation');
-
-    const sliderWrapper = document.querySelector('.slider-wrapper');
-
-    const videos = document.querySelectorAll('.slide video');
-
-    const prevBtn = document.querySelector('.prev-btn');
-
-    const nextBtn = document.querySelector('.next-btn');
-
-    const restartBtn = document.querySelector('.restart-btn');
-
-    const replayBtnWrappers = document.querySelectorAll('.replay-btn-wrapper');
-
-    const replayBtns = document.querySelectorAll('.replay-btn');
-
-    const ratingContainer = document.querySelector('.satisfaction-rating'); // ✨ 별점 컨테이너 선택
-
-    let currentIndex = 0;
-
-    const totalSlides = videos.length;
-
-    
-
-    stepLabels.forEach((label, index) => {
-
-        const button = document.createElement('button');
-
-        button.className = 'step-btn';
-
-        button.textContent = label;
-
-        button.dataset.slideTo = index;
-
-        stepNavigation.appendChild(button);
-
-    });
-
-    const stepButtons = document.querySelectorAll('.step-btn');
-
-
-
-    stepButtons.forEach(button => {
-
-        button.addEventListener('click', () => {
-
-            const slideIndex = parseInt(button.dataset.slideTo, 10);
-
-            goToSlide(slideIndex);
-
-        });
-
-    });
-
-
-
-    function updateAdditionalText(index) {
-
-        if (textData[index]) {
-
-            additionalDescription.textContent = textData[index].description;
-
-        }
-
-    }
-
-    
-
-    function updateActiveStepButton(index) {
-
-        stepButtons.forEach((button, btnIndex) => {
-
-            if (btnIndex === index) {
-
-                button.classList.add('active');
-
-            } else {
-
-                button.classList.remove('active');
-
-            }
-
-        });
-
-    }
-
-
-
-    function hideAllButtons() {
-
-        prevBtn.classList.remove('show');
-
-        nextBtn.classList.remove('show');
-
-        restartBtn.classList.remove('show');
-
-        replayBtnWrappers.forEach(wrapper => wrapper.classList.remove('show'));
-
-    }
-
-    
-
-    function updateButtonVisibility() {
-
-        hideAllButtons();
-
-        replayBtnWrappers[currentIndex].classList.add('show');
-
-        if (currentIndex === totalSlides - 1) {
-
-            // 별점 초기화
-
-            if (ratingContainer) {
-
-                const stars = ratingContainer.querySelectorAll('.star');
-
-                stars.forEach(s => s.classList.remove('selected'));
-
-            }
-
-        }
-
-        if (currentIndex === 0) {
-
-            nextBtn.classList.add('show');
-
-        } else if (currentIndex > 0 && currentIndex < totalSlides - 1) {
-
-            prevBtn.classList.add('show');
-
-            nextBtn.classList.add('show');
-
-        } else if (currentIndex === totalSlides - 1) {
-
-            prevBtn.classList.add('show');
-
-            restartBtn.classList.add('show');
-
-        }
-
-    }
-
-    
-
-    function goToSlide(index) {
-
-        sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
-
-        currentIndex = index;
-
-        updateAdditionalText(currentIndex);
-
-        updateActiveStepButton(currentIndex);
-
-        videos.forEach(video => {
-
-            video.pause();
-
-            video.currentTime = 0;
-
-        });
-
-        hideAllButtons();
-
-        if (videos[currentIndex]) {
-
-            videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
-
-        }
-
-    }
-
-    
-
-    videos.forEach((video, index) => {
-
-        video.addEventListener('ended', () => { if(index === currentIndex) { updateButtonVisibility(); } });
-
-    });
-
-    
-
-    replayBtns.forEach((btn, index) => {
-
-        btn.addEventListener('click', () => {
-
-            if(index === currentIndex) {
-
-                hideAllButtons();
-
-                videos[currentIndex].play();
-
-            }
-
-        });
-
-    });
-
-    
-
-    nextBtn.addEventListener('click', () => { if (currentIndex < totalSlides - 1) { goToSlide(currentIndex + 1); } });
-
-    prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
-
-    restartBtn.addEventListener('click', () => { goToSlide(0); });
-
-
-
-    updateAdditionalText(0);
-
-    updateActiveStepButton(0);
-
-    hideAllButtons();
-
-    if (videos[currentIndex]) {
-
-        videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
-
-    }
-
-
-
-    // ✨ 수정된 1점 단위 별점 스크립트
-
-    if (ratingContainer) {
-
-        const stars = ratingContainer.querySelectorAll('.star');
-
-        stars.forEach(star => {
-
-            star.addEventListener('click', function() {
-
-                const selectedRating = this.dataset.rating;
-
-                alert(`만족도 ${selectedRating}점을 주셔서 감사합니다!`);
-
-                
-
-                // 클릭된 별 고정
-
-                stars.forEach(s => {
-
-                    s.classList.remove('selected');
-
-                    if (s.dataset.rating <= selectedRating) {
-
-                        s.classList.add('selected');
-
-                    }
-
-                });
-
-            });
-
-        });
-
-    }
-
+    
+    const stepLabels = ["1단계: 제품 커버 열기", "2단계: 필터 커버 열기", "3단계: 기존 필터 분리"];
+    const textData = [
+        { description: "상단 제품 커버의 표시된 부분을 잡고 힘껏 밀어 분리해주세요." },
+        { description: "필터 커버의 PUSH 부분을 눌러 커버를 열어주세요." },
+        { description: "필터를 뒤로 힘껏 밀어 분리해주세요." }
+    ];
+
+    const additionalDescription = document.getElementById('additional-description');
+    const stepNavigation = document.querySelector('.step-navigation');
+    const sliderWrapper = document.querySelector('.slider-wrapper');
+    const videos = document.querySelectorAll('.slide video');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    const restartBtn = document.querySelector('.restart-btn');
+    const replayBtnWrappers = document.querySelectorAll('.replay-btn-wrapper');
+    const replayBtns = document.querySelectorAll('.replay-btn');
+    const ratingContainer = document.querySelector('.satisfaction-rating'); // ✨ 별점 컨테이너 선택
+    let currentIndex = 0;
+    const totalSlides = videos.length;
+    
+    stepLabels.forEach((label, index) => {
+        const button = document.createElement('button');
+        button.className = 'step-btn';
+        button.textContent = label;
+        button.dataset.slideTo = index;
+        stepNavigation.appendChild(button);
+    });
+    const stepButtons = document.querySelectorAll('.step-btn');
+
+    stepButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const slideIndex = parseInt(button.dataset.slideTo, 10);
+            goToSlide(slideIndex);
+        });
+    });
+
+    function updateAdditionalText(index) {
+        if (textData[index]) {
+            additionalDescription.textContent = textData[index].description;
+        }
+    }
+    
+    function updateActiveStepButton(index) {
+        stepButtons.forEach((button, btnIndex) => {
+            if (btnIndex === index) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
+
+    function hideAllButtons() {
+        prevBtn.classList.remove('show');
+        nextBtn.classList.remove('show');
+        restartBtn.classList.remove('show');
+        replayBtnWrappers.forEach(wrapper => wrapper.classList.remove('show'));
+    }
+    
+    function updateButtonVisibility() {
+        hideAllButtons();
+        replayBtnWrappers[currentIndex].classList.add('show');
+        if (currentIndex === totalSlides - 1) {
+            // 별점 초기화
+            if (ratingContainer) {
+                const stars = ratingContainer.querySelectorAll('.star');
+                stars.forEach(s => s.classList.remove('selected'));
+            }
+        }
+        if (currentIndex === 0) {
+            nextBtn.classList.add('show');
+        } else if (currentIndex > 0 && currentIndex < totalSlides - 1) {
+            prevBtn.classList.add('show');
+            nextBtn.classList.add('show');
+        } else if (currentIndex === totalSlides - 1) {
+            prevBtn.classList.add('show');
+            restartBtn.classList.add('show');
+        }
+    }
+    
+    function goToSlide(index) {
+        sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
+        currentIndex = index;
+        updateAdditionalText(currentIndex);
+        updateActiveStepButton(currentIndex);
+        videos.forEach(video => {
+            video.pause();
+            video.currentTime = 0;
+        });
+        hideAllButtons();
+        if (videos[currentIndex]) {
+            videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
+        }
+    }
+    
+    videos.forEach((video, index) => {
+        video.addEventListener('ended', () => { if(index === currentIndex) { updateButtonVisibility(); } });
+    });
+    
+    replayBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            if(index === currentIndex) {
+                hideAllButtons();
+                videos[currentIndex].play();
+            }
+        });
+    });
+    
+    nextBtn.addEventListener('click', () => { if (currentIndex < totalSlides - 1) { goToSlide(currentIndex + 1); } });
+    prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
+    restartBtn.addEventListener('click', () => { goToSlide(0); });
+
+    updateAdditionalText(0);
+    updateActiveStepButton(0);
+    hideAllButtons();
+    if (videos[currentIndex]) {
+        videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
+    }
+
+    // ✨ 수정된 1점 단위 별점 스크립트
+    if (ratingContainer) {
+        const stars = ratingContainer.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const selectedRating = this.dataset.rating;
+                alert(`만족도 ${selectedRating}점을 주셔서 감사합니다!`);
+                
+                // 클릭된 별 고정
+                stars.forEach(s => {
+                    s.classList.remove('selected');
+                    if (s.dataset.rating <= selectedRating) {
+                        s.classList.add('selected');
+                    }
+                });
+            });
+        });
+    }
 });
-
 </script>
 
-
-
 </body>
-
 </html>
