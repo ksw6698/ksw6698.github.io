@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>필터 교체 방법 샘플</title>
 <style>
-    /* 기존 스타일 */
+    /* CSS는 변경 사항 없습니다. */
     body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
     .slider-container { width: 100%; max-width: 900px; margin: 40px auto; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); background-color: #000; }
     .slider-wrapper { display: flex; }
@@ -28,15 +28,7 @@
     .satisfaction-rating input:checked ~ label::before,
     .satisfaction-rating label:hover ~ label::before,
     .satisfaction-rating label:hover::before { color: #ffc107; }
-
-    /* --- ✨ 새로 추가된 텍스트 영역 스타일 --- */
-    .additional-text-area {
-        max-width: 900px; /* 슬라이더 최대 너비와 동일하게 */
-        margin: 20px auto; /* 위쪽 여백 및 중앙 정렬 */
-        padding: 0 20px; /* 좌우 여백 */
-        box-sizing: border-box;
-        text-align: center; /* 텍스트 중앙 정렬 */
-    }
+    .additional-text-area { max-width: 900px; margin: 20px auto; padding: 0 20px; box-sizing: border-box; text-align: center; }
 </style>
 </head>
 <body>
@@ -78,14 +70,24 @@
 </div>
 
 <div class="additional-text-area">
-    <h2>추가 정보 섹션</h2>
-    <p>이곳에 원하시는 텍스트를 자유롭게 입력하세요. 동영상에 대한 부가 설명이나 공지사항 등을 적을 수 있습니다.</p>
+    <h2 id="additional-title"></h2>
+    <p id="additional-description"></p>
 </div>
 
 <script>
-// JavaScript는 변경 사항 없습니다.
 document.addEventListener('DOMContentLoaded', function() {
-    // ... (이전과 동일한 스크립트 내용)
+    // ✨ --- 텍스트 변경을 위한 요소 선택 --- ✨
+    const additionalTitle = document.getElementById('additional-title');
+    const additionalDescription = document.getElementById('additional-description');
+    
+    // ✨ --- 각 영상별로 보여줄 텍스트 데이터 --- ✨
+    const textData = [
+        { title: "1단계: 커버 열기", description: "정수기 상단 커버를 뒤로 밀어서 열어주세요. 필터 교체의 첫 단계입니다." },
+        { title: "2단계: 필터 교체", description: "사용한 필터를 위로 들어서 꺼낸 후, 새 필터를 방향에 맞게 끼워주세요." },
+        { title: "3단계: 필터 세척", description: "필터 교체 후에는 반드시 3분 이상 물을 흘려보내 필터를 세척해야 합니다." }
+    ];
+
+    // --- 기존 스크립트 내용 (일부 수정) ---
     const sliderWrapper = document.querySelector('.slider-wrapper');
     const videos = document.querySelectorAll('.slide video');
     const prevBtn = document.querySelector('.prev-btn');
@@ -97,6 +99,14 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentIndex = 0;
     const totalSlides = videos.length;
     let currentSelectedRating = 0;
+
+    // ✨ --- 텍스트를 업데이트하는 함수 --- ✨
+    function updateAdditionalText(index) {
+        if (textData[index]) {
+            additionalTitle.textContent = textData[index].title;
+            additionalDescription.textContent = textData[index].description;
+        }
+    }
 
     function hideAllButtons() {
         prevBtn.classList.remove('show');
@@ -126,6 +136,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function goToSlide(index) {
         sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
         currentIndex = index;
+        
+        updateAdditionalText(currentIndex); // ✨ 슬라이드 이동 시 텍스트 변경
+        
         videos.forEach(video => {
             video.pause();
             video.currentTime = 0;
@@ -152,6 +165,9 @@ document.addEventListener('DOMContentLoaded', function() {
     nextBtn.addEventListener('click', () => { if (currentIndex < totalSlides - 1) { goToSlide(currentIndex + 1); } });
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
     restartBtn.addEventListener('click', () => { goToSlide(0); });
+
+    // --- 페이지 첫 로드 시 실행 로직 (수정) ---
+    updateAdditionalText(0); // ✨ 첫 로드 시 1번 영상에 맞는 텍스트 표시
     hideAllButtons();
     if (videos[currentIndex]) {
         videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
