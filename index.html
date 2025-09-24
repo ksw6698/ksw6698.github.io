@@ -7,7 +7,44 @@
 <style>
     /* 기존 스타일 */
     body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
-    .slider-container { width: 100%; max-width: 900px; margin: 40px auto; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); background-color: #000; }
+    
+    /* ✨ 전체 컨테이너 스타일 */
+    .main-container {
+        width: 100%;
+        max-width: 900px; /* 슬라이더 최대 너비와 동일하게 */
+        margin: 40px auto;
+        border-radius: 12px; /* 전체 모서리를 둥글게 */
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        overflow: hidden; /* 모서리 밖으로 나가는 요소 숨김 */
+    }
+
+    /* --- ✨ 새로 추가된 단계별 탐색 버튼 스타일 --- */
+    .step-navigation {
+        display: flex;
+        background-color: #f8f9fa;
+        padding: 10px;
+    }
+    .step-btn {
+        flex-grow: 1; /* 버튼들이 동일한 너비를 가지도록 함 */
+        padding: 10px 5px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        background-color: transparent;
+        border: none;
+        border-bottom: 3px solid transparent; /* 비활성 상태의 밑줄 */
+        cursor: pointer;
+        color: #888;
+        transition: all 0.3s ease;
+    }
+    .step-btn.active {
+        color: #007bff;
+        border-bottom-color: #007bff; /* 활성 상태의 밑줄 */
+    }
+
+    /* 슬라이더 컨테이너 스타일 수정 */
+    .slider-container { width: 100%; margin: 0; position: relative; overflow: hidden; background-color: #000; box-shadow: none; border-radius: 0; }
+    
     .slider-wrapper { display: flex; }
     .slide { min-width: 100%; box-sizing: border-box; position: relative; }
     .slide video { width: 100%; display: block; }
@@ -20,86 +57,55 @@
     .replay-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 20; display: none; pointer-events: none; }
     .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
     .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
-
-    /* --- 수정된 0.5점 단위 별점 스타일 --- */
-    .satisfaction-rating {
-        margin-top: 20px;
-        display: inline-flex;
-        direction: rtl;
-        pointer-events: auto;
-    }
-    .satisfaction-rating input {
-        display: none;
-    }
-    .satisfaction-rating label {
-        display: block;
-        cursor: pointer;
-        width: 16px;
-        height: 30px;
-        overflow: hidden;
-        font-size: 30px;
-        line-height: 1;
-        position: relative;
-        text-shadow: 0 0 1px #888;
-        color: #bbb;
-    }
-    .satisfaction-rating label::before {
-        content: '★';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 32px;
-        color: #bbb;
-    }
-    .satisfaction-rating label.half::before {
-        content: '★';
-        width: 16px;
-        overflow: hidden;
-        color: #ffc107;
-    }
-    .satisfaction-rating input:checked ~ label::before,
-    .satisfaction-rating label:hover ~ label::before,
-    .satisfaction-rating label:hover::before {
-        color: #ffc107;
-    }
+    .satisfaction-rating { margin-top: 20px; display: inline-flex; direction: rtl; pointer-events: auto; }
+    .satisfaction-rating input { display: none; }
+    .satisfaction-rating label { display: block; cursor: pointer; width: 16px; height: 30px; overflow: hidden; font-size: 30px; line-height: 1; position: relative; text-shadow: 0 0 1px #888; color: #bbb; }
+    .satisfaction-rating label::before { content: '★'; position: absolute; left: 0; top: 0; width: 32px; color: #bbb; }
+    .satisfaction-rating label.half::before { content: '★'; width: 16px; overflow: hidden; color: #ffc107; }
+    .satisfaction-rating input:checked ~ label::before, .satisfaction-rating label:hover ~ label::before, .satisfaction-rating label:hover::before { color: #ffc107; }
     .additional-text-area { max-width: 900px; margin: 20px auto; padding: 0 20px; box-sizing: border-box; text-align: center; }
 </style>
 </head>
 <body>
 
-<div class="slider-container">
-    <div class="slider-wrapper">
-        <div class="slide">
-            <video id="video-0" src="1번영상.mp4" muted playsinline></video>
-            <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
-        </div>
-        <div class="slide">
-            <video id="video-1" src="2번영상.mp4" muted playsinline></video>
-            <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
-        </div>
-        <div class="slide">
-            <video id="video-2" src="3번영상.mp4" muted playsinline></video>
-            <div class="replay-btn-wrapper">
-                <button class="replay-btn">↻</button>
-                <div class="replay-text">다시보기</div>
-                <form class="satisfaction-rating" id="ratingForm">
-                    <input type="radio" id="star50" name="rating" value="5.0" /><label for="star50"></label>
-                    <input type="radio" id="star45" name="rating" value="4.5" /><label for="star45" class="half"></label>
-                    <input type="radio" id="star40" name="rating" value="4.0" /><label for="star40"></label>
-                    <input type="radio" id="star35" name="rating" value="3.5" /><label for="star35" class="half"></label>
-                    <input type="radio" id="star30" name="rating" value="3.0" /><label for="star30"></label>
-                    <input type="radio" id="star25" name="rating" value="2.5" /><label for="star25" class="half"></label>
-                    <input type="radio" id="star20" name="rating" value="2.0" /><label for="star20"></label>
-                    <input type="radio" id="star15" name="rating" value="1.5" /><label for="star15" class="half"></label>
-                    <input type="radio" id="star10" name="rating" value="1.0" /><label for="star10"></label>
-                    <input type="radio" id="star05" name="rating" value="0.5" /><label for="star05" class="half"></label>
-                </form>
+<div class="main-container">
+
+    <div class="step-navigation"></div>
+    
+    <div class="slider-container">
+        <div class="slider-wrapper">
+            <div class="slide">
+                <video id="video-0" src="1번영상.mp4" muted playsinline></video>
+                <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
+            </div>
+            <div class="slide">
+                <video id="video-1" src="2번영상.mp4" muted playsinline></video>
+                <div class="replay-btn-wrapper"><button class="replay-btn">↻</button><div class="replay-text">다시보기</div></div>
+            </div>
+            <div class="slide">
+                <video id="video-2" src="3번영상.mp4" muted playsinline></video>
+                <div class="replay-btn-wrapper">
+                    <button class="replay-btn">↻</button>
+                    <div class="replay-text">다시보기</div>
+                    <form class="satisfaction-rating" id="ratingForm">
+                        <input type="radio" id="star50" name="rating" value="5.0" /><label for="star50"></label>
+                        <input type="radio" id="star45" name="rating" value="4.5" /><label for="star45" class="half"></label>
+                        <input type="radio" id="star40" name="rating" value="4.0" /><label for="star40"></label>
+                        <input type="radio" id="star35" name="rating" value="3.5" /><label for="star35" class="half"></label>
+                        <input type="radio" id="star30" name="rating" value="3.0" /><label for="star30"></label>
+                        <input type="radio" id="star25" name="rating" value="2.5" /><label for="star25" class="half"></label>
+                        <input type="radio" id="star20" name="rating" value="2.0" /><label for="star20"></label>
+                        <input type="radio" id="star15" name="rating" value="1.5" /><label for="star15" class="half"></label>
+                        <input type="radio" id="star10" name="rating" value="1.0" /><label for="star10"></label>
+                        <input type="radio" id="star05" name="rating" value="0.5" /><label for="star05" class="half"></label>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="button-wrapper">
-        <div class="button-group-left"><button class="slider-btn prev-btn">❮ 이전으로 가기</button></div>
-        <div class="button-group-right"><button class="slider-btn next-btn">다음으로 이동 ❯</button><button class="slider-btn restart-btn">처음부터 다시 보기 ↻</button></div>
+        <div class="button-wrapper">
+            <div class="button-group-left"><button class="slider-btn prev-btn">❮ 이전으로 가기</button></div>
+            <div class="button-group-right"><button class="slider-btn next-btn">다음으로 이동 ❯</button><button class="slider-btn restart-btn">처음부터 다시 보기 ↻</button></div>
+        </div>
     </div>
 </div>
 
@@ -110,15 +116,19 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const additionalTitle = document.getElementById('additional-title');
-    const additionalDescription = document.getElementById('additional-description');
     
+    // ✨ --- 1. 버튼 이름과 하단 텍스트를 이곳에서 수정하세요 --- ✨
+    const stepLabels = ["1단계: 커버 열기", "2단계: 필터 교체", "3단계: 필터 세척"];
     const textData = [
         { title: "1단계: 커버 열기", description: "정수기 상단 커버를 뒤로 밀어서 열어주세요. 필터 교체의 첫 단계입니다." },
         { title: "2단계: 필터 교체", description: "사용한 필터를 위로 들어서 꺼낸 후, 새 필터를 방향에 맞게 끼워주세요." },
         { title: "3단계: 필터 세척", description: "필터 교체 후에는 반드시 3분 이상 물을 흘려보내 필터를 세척해야 합니다." }
     ];
+    // -----------------------------------------------------------------
 
+    const additionalTitle = document.getElementById('additional-title');
+    const additionalDescription = document.getElementById('additional-description');
+    const stepNavigation = document.querySelector('.step-navigation');
     const sliderWrapper = document.querySelector('.slider-wrapper');
     const videos = document.querySelectorAll('.slide video');
     const prevBtn = document.querySelector('.prev-btn');
@@ -130,12 +140,41 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentIndex = 0;
     const totalSlides = videos.length;
     let currentSelectedRating = 0;
+    
+    // ✨ --- 2. stepLabels 배열을 기반으로 버튼 동적 생성 --- ✨
+    stepLabels.forEach((label, index) => {
+        const button = document.createElement('button');
+        button.className = 'step-btn';
+        button.textContent = label;
+        button.dataset.slideTo = index; // 버튼에 이동할 슬라이드 인덱스 저장
+        stepNavigation.appendChild(button);
+    });
+    const stepButtons = document.querySelectorAll('.step-btn'); // 생성된 버튼들 선택
+
+    // ✨ --- 3. 단계 버튼에 클릭 이벤트 추가 --- ✨
+    stepButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const slideIndex = parseInt(button.dataset.slideTo, 10);
+            goToSlide(slideIndex);
+        });
+    });
 
     function updateAdditionalText(index) {
         if (textData[index]) {
             additionalTitle.textContent = textData[index].title;
             additionalDescription.textContent = textData[index].description;
         }
+    }
+    
+    // ✨ --- 4. 현재 활성화된 단계 버튼을 표시하는 함수 --- ✨
+    function updateActiveStepButton(index) {
+        stepButtons.forEach((button, btnIndex) => {
+            if (btnIndex === index) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
     }
 
     function hideAllButtons() {
@@ -169,6 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
         currentIndex = index;
         updateAdditionalText(currentIndex);
+        updateActiveStepButton(currentIndex); // ✨ 활성 버튼 업데이트
         videos.forEach(video => {
             video.pause();
             video.currentTime = 0;
@@ -199,13 +239,13 @@ document.addEventListener('DOMContentLoaded', function() {
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
     restartBtn.addEventListener('click', () => { goToSlide(0); });
 
-    // --- 페이지 첫 로드 시 실행 로직 (수정) ---
+    // --- 페이지 첫 로드 시 실행 로직 ---
     updateAdditionalText(0);
-    hideAllButtons(); // 페이지 로드 시 모든 버튼 숨기기
+    updateActiveStepButton(0); // ✨ 첫 로드 시 첫 버튼 활성화
+    hideAllButtons();
     if (videos[currentIndex]) {
         videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
     }
-
     if (ratingForm) {
         ratingForm.addEventListener('change', function(event) {
             if (currentIndex === totalSlides - 1 && event.target.name === 'rating') {
