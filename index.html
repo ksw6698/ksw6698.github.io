@@ -7,44 +7,11 @@
 <style>
     /* 기존 스타일 */
     body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
-    
-    /* ✨ 전체 컨테이너 스타일 */
-    .main-container {
-        width: 100%;
-        max-width: 900px; /* 슬라이더 최대 너비와 동일하게 */
-        margin: 40px auto;
-        border-radius: 12px; /* 전체 모서리를 둥글게 */
-        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-        overflow: hidden; /* 모서리 밖으로 나가는 요소 숨김 */
-    }
-
-    /* --- ✨ 새로 추가된 단계별 탐색 버튼 스타일 --- */
-    .step-navigation {
-        display: flex;
-        background-color: #f8f9fa;
-        padding: 10px;
-    }
-    .step-btn {
-        flex-grow: 1; /* 버튼들이 동일한 너비를 가지도록 함 */
-        padding: 10px 5px;
-        font-size: 14px;
-        font-weight: bold;
-        text-align: center;
-        background-color: transparent;
-        border: none;
-        border-bottom: 3px solid transparent; /* 비활성 상태의 밑줄 */
-        cursor: pointer;
-        color: #888;
-        transition: all 0.3s ease;
-    }
-    .step-btn.active {
-        color: #007bff;
-        border-bottom-color: #007bff; /* 활성 상태의 밑줄 */
-    }
-
-    /* 슬라이더 컨테이너 스타일 수정 */
+    .main-container { width: 100%; max-width: 900px; margin: 40px auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); overflow: hidden; }
+    .step-navigation { display: flex; background-color: #f8f9fa; padding: 10px; }
+    .step-btn { flex-grow: 1; padding: 10px 5px; font-size: 14px; font-weight: bold; text-align: center; background-color: transparent; border: none; border-bottom: 3px solid transparent; cursor: pointer; color: #888; transition: all 0.3s ease; }
+    .step-btn.active { color: #007bff; border-bottom-color: #007bff; }
     .slider-container { width: 100%; margin: 0; position: relative; overflow: hidden; background-color: #000; box-shadow: none; border-radius: 0; }
-    
     .slider-wrapper { display: flex; }
     .slide { min-width: 100%; box-sizing: border-box; position: relative; }
     .slide video { width: 100%; display: block; }
@@ -69,9 +36,7 @@
 <body>
 
 <div class="main-container">
-
     <div class="step-navigation"></div>
-    
     <div class="slider-container">
         <div class="slider-wrapper">
             <div class="slide">
@@ -110,23 +75,21 @@
 </div>
 
 <div class="additional-text-area">
-    <h2 id="additional-title"></h2>
     <p id="additional-description"></p>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ✨ --- 1. 버튼 이름과 하단 텍스트를 이곳에서 수정하세요 --- ✨
+    // --- 1. 버튼 이름과 하단 텍스트를 이곳에서 수정하세요 ---
     const stepLabels = ["1단계: 커버 열기", "2단계: 필터 교체", "3단계: 필터 세척"];
     const textData = [
-        { title: "1단계: 커버 열기", description: "정수기 상단 커버를 뒤로 밀어서 열어주세요. 필터 교체의 첫 단계입니다." },
-        { title: "2단계: 필터 교체", description: "사용한 필터를 위로 들어서 꺼낸 후, 새 필터를 방향에 맞게 끼워주세요." },
-        { title: "3단계: 필터 세척", description: "필터 교체 후에는 반드시 3분 이상 물을 흘려보내 필터를 세척해야 합니다." }
+        { description: "정수기 상단 커버를 뒤로 밀어서 열어주세요. 필터 교체의 첫 단계입니다." },
+        { description: "사용한 필터를 위로 들어서 꺼낸 후, 새 필터를 방향에 맞게 끼워주세요." },
+        { description: "필터 교체 후에는 반드시 3분 이상 물을 흘려보내 필터를 세척해야 합니다." }
     ];
     // -----------------------------------------------------------------
 
-    const additionalTitle = document.getElementById('additional-title');
     const additionalDescription = document.getElementById('additional-description');
     const stepNavigation = document.querySelector('.step-navigation');
     const sliderWrapper = document.querySelector('.slider-wrapper');
@@ -141,17 +104,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalSlides = videos.length;
     let currentSelectedRating = 0;
     
-    // ✨ --- 2. stepLabels 배열을 기반으로 버튼 동적 생성 --- ✨
     stepLabels.forEach((label, index) => {
         const button = document.createElement('button');
         button.className = 'step-btn';
         button.textContent = label;
-        button.dataset.slideTo = index; // 버튼에 이동할 슬라이드 인덱스 저장
+        button.dataset.slideTo = index;
         stepNavigation.appendChild(button);
     });
-    const stepButtons = document.querySelectorAll('.step-btn'); // 생성된 버튼들 선택
+    const stepButtons = document.querySelectorAll('.step-btn');
 
-    // ✨ --- 3. 단계 버튼에 클릭 이벤트 추가 --- ✨
     stepButtons.forEach(button => {
         button.addEventListener('click', () => {
             const slideIndex = parseInt(button.dataset.slideTo, 10);
@@ -161,12 +122,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateAdditionalText(index) {
         if (textData[index]) {
-            additionalTitle.textContent = textData[index].title;
             additionalDescription.textContent = textData[index].description;
         }
     }
     
-    // ✨ --- 4. 현재 활성화된 단계 버튼을 표시하는 함수 --- ✨
     function updateActiveStepButton(index) {
         stepButtons.forEach((button, btnIndex) => {
             if (btnIndex === index) {
@@ -208,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
         currentIndex = index;
         updateAdditionalText(currentIndex);
-        updateActiveStepButton(currentIndex); // ✨ 활성 버튼 업데이트
+        updateActiveStepButton(currentIndex);
         videos.forEach(video => {
             video.pause();
             video.currentTime = 0;
@@ -241,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- 페이지 첫 로드 시 실행 로직 ---
     updateAdditionalText(0);
-    updateActiveStepButton(0); // ✨ 첫 로드 시 첫 버튼 활성화
+    updateActiveStepButton(0);
     hideAllButtons();
     if (videos[currentIndex]) {
         videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
