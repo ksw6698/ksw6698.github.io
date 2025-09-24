@@ -21,78 +21,44 @@
     .slider-btn.show { opacity: 1; transform: translateY(0); display: block; }
     .slider-btn:hover { background-color: white; color: black; }
     .restart-btn { background-color: #007bff; border-color: #007bff; }
-    
-    /* replay-btn-wrapper의 스타일 조정: 만족도 평가도 가운데 정렬되도록 */
-    .replay-btn-wrapper { 
-        position: absolute; 
-        top: 50%; 
-        left: 50%; 
-        transform: translate(-50%, -50%); 
-        text-align: center; 
-        z-index: 20; 
-        display: none; 
-        pointer-events: none; 
-        /* 추가: flexbox를 사용하여 내부 요소들을 중앙 정렬 */
-        display: flex;
-        flex-direction: column; /* 세로 방향 정렬 */
-        align-items: center; /* 가로 중앙 정렬 */
-        justify-content: center; /* 세로 중앙 정렬 */
-    }
-
+    .replay-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 20; display: none; pointer-events: none; }
     .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
     .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
     
-    /* --- ✨ 만족도 평가 스타일 수정 --- */
-    .satisfaction-rating { 
-        margin-top: 20px; 
-        display: inline-flex; 
-        direction: rtl; 
-        pointer-events: auto; 
-        justify-content: center; /* 별점 자체도 중앙 정렬 */
+    /* --- ✨ 수정된 0.5점 단위 별점 스타일 --- */
+    .satisfaction-rating {
+        margin-top: 20px;
+        display: flex; /* Flexbox 사용 */
+        direction: rtl; /* 오른쪽부터 채워지도록 */
+        justify-content: center;
+        pointer-events: auto;
     }
     .satisfaction-rating input { display: none; }
-    .satisfaction-rating label { 
-        display: block; 
-        cursor: pointer; 
-        /* width를 font-size에 맞춰 충분히 크게 조정 */
-        width: 30px; /* font-size 30px에 맞춰 */
-        height: 30px; 
-        overflow: hidden; 
-        font-size: 30px; 
-        line-height: 1; 
-        position: relative; 
-        text-shadow: 0 0 1px #888; 
-        color: #bbb; 
+    .satisfaction-rating label {
+        font-size: 30px;
+        color: #bbb;
+        cursor: pointer;
+        transition: color 0.2s;
+        width: 15px; /* 각 라벨은 별의 절반 너비 */
+        overflow: hidden; /* 절반만 보이도록 자르기 */
     }
-    .satisfaction-rating label::before { 
-        content: '★'; 
-        position: absolute; 
-        left: 0; 
-        top: 0; 
-        width: 30px; /* label의 width와 동일하게 */
-        color: #bbb; 
+    .satisfaction-rating label::before {
+        content: '★';
+        display: block;
+        width: 30px; /* 별 하나의 전체 너비 */
     }
-    /* half 별점은 정확히 절반만 보이도록 width 조정 */
-    .satisfaction-rating label.half::before { 
-        content: '★'; 
-        width: 15px; /* 전체 별표 너비의 절반 */
-        overflow: hidden; 
-        color: #ffc107; 
+    .satisfaction-rating label:nth-of-type(odd)::before {
+        margin-left: -15px; /* 홀수 라벨은 별의 왼쪽 절반이 보이도록 */
     }
-    .satisfaction-rating input:checked ~ label::before, 
-    .satisfaction-rating label:hover ~ label::before, 
-    .satisfaction-rating label:hover::before { 
-        color: #ffc107; 
+    .satisfaction-rating input:checked ~ label,
+    .satisfaction-rating:hover label {
+        color: #ffc107; /* 선택되거나 호버된 별 색상 변경 */
+    }
+    .satisfaction-rating label:hover ~ label {
+        color: #bbb; /* 호버되지 않은 뒷 별들은 다시 원래 색으로 */
     }
     
-    .additional-text-area { 
-        max-width: 900px; 
-        margin: 20px auto; 
-        padding: 0 20px; 
-        box-sizing: border-box; 
-        text-align: center; 
-        font-size: 1.1em; 
-    }
+    .additional-text-area { max-width: 900px; margin: 20px auto; padding: 0 20px; box-sizing: border-box; text-align: center; font-size: 1.1em; }
 </style>
 </head>
 <body>
@@ -115,15 +81,15 @@
                     <div class="replay-text">다시보기</div>
                     <form class="satisfaction-rating" id="ratingForm">
                         <input type="radio" id="star50" name="rating" value="5.0" /><label for="star50"></label>
-                        <input type="radio" id="star45" name="rating" value="4.5" /><label for="star45" class="half"></label>
+                        <input type="radio" id="star45" name="rating" value="4.5" /><label for="star45"></label>
                         <input type="radio" id="star40" name="rating" value="4.0" /><label for="star40"></label>
-                        <input type="radio" id="star35" name="rating" value="3.5" /><label for="star35" class="half"></label>
+                        <input type="radio" id="star35" name="rating" value="3.5" /><label for="star35"></label>
                         <input type="radio" id="star30" name="rating" value="3.0" /><label for="star30"></label>
-                        <input type="radio" id="star25" name="rating" value="2.5" /><label for="star25" class="half"></label>
+                        <input type="radio" id="star25" name="rating" value="2.5" /><label for="star25"></label>
                         <input type="radio" id="star20" name="rating" value="2.0" /><label for="star20"></label>
-                        <input type="radio" id="star15" name="rating" value="1.5" /><label for="star15" class="half"></label>
+                        <input type="radio" id="star15" name="rating" value="1.5" /><label for="star15"></label>
                         <input type="radio" id="star10" name="rating" value="1.0" /><label for="star10"></label>
-                        <input type="radio" id="star05" name="rating" value="0.5" /><label for="star05" class="half"></label>
+                        <input type="radio" id="star05" name="rating" value="0.5" /><label for="star05"></label>
                     </form>
                 </div>
             </div>
@@ -200,36 +166,26 @@ document.addEventListener('DOMContentLoaded', function() {
         prevBtn.classList.remove('show');
         nextBtn.classList.remove('show');
         restartBtn.classList.remove('show');
-        
-        // replay-btn-wrapper의 display 속성을 'none'으로 설정하여 숨기기
-        replayBtnWrappers.forEach(wrapper => {
-            wrapper.style.display = 'none';
-        });
+        replayBtnWrappers.forEach(wrapper => wrapper.style.display = 'none');
     }
     
     function updateButtonVisibility() {
-        // 모든 버튼을 숨긴 후에 현재 슬라이드에 맞는 버튼만 보여줍니다.
         hideAllButtons();
-        
-        // 현재 슬라이드의 replay-btn-wrapper를 다시 'flex'로 설정하여 보이게 합니다.
-        // 이 때, 만족도 평가 폼도 이 wrapper 안에 있으므로 함께 보이게 됩니다.
-        if (replayBtnWrappers[currentIndex]) {
-             replayBtnWrappers[currentIndex].style.display = 'flex';
-        }
-
+        replayBtnWrappers[currentIndex].style.display = 'block';
         if (currentIndex === totalSlides - 1) {
-            // 마지막 슬라이드인 경우 만족도 폼을 리셋합니다.
             if (ratingForm) {
                 ratingForm.reset();
                 currentSelectedRating = 0;
             }
+        }
+        if (currentIndex === 0) {
+            nextBtn.classList.add('show');
+        } else if (currentIndex > 0 && currentIndex < totalSlides - 1) {
+            prevBtn.classList.add('show');
+            nextBtn.classList.add('show');
+        } else if (currentIndex === totalSlides - 1) {
             prevBtn.classList.add('show');
             restartBtn.classList.add('show');
-        } else if (currentIndex === 0) {
-            nextBtn.classList.add('show');
-        } else { // 중간 슬라이드
-            prevBtn.classList.add('show');
-            nextBtn.classList.add('show');
         }
     }
     
@@ -242,28 +198,23 @@ document.addEventListener('DOMContentLoaded', function() {
             video.pause();
             video.currentTime = 0;
         });
-        
-        // 슬라이드 이동 시에도 버튼 가시성을 업데이트
-        updateButtonVisibility();
-
+        hideAllButtons(); // ✨ 버튼 숨기는 로직을 이곳으로 이동
         if (videos[currentIndex]) {
             videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
         }
     }
     
     videos.forEach((video, index) => {
-        video.addEventListener('ended', () => { 
-            if(index === currentIndex) { 
-                updateButtonVisibility(); 
-            } 
-        });
+        video.addEventListener('ended', () => { if(index === currentIndex) { updateButtonVisibility(); } });
     });
     
     replayBtns.forEach((btn, index) => {
         btn.addEventListener('click', () => {
             if(index === currentIndex) {
-                // 다시보기 버튼 클릭 시 모든 버튼 숨기고, 해당 영상 재생
-                hideAllButtons(); 
+                prevBtn.classList.remove('show');
+                nextBtn.classList.remove('show');
+                restartBtn.classList.remove('show');
+                replayBtnWrappers[currentIndex].style.display = 'none';
                 videos[currentIndex].play();
             }
         });
@@ -273,16 +224,14 @@ document.addEventListener('DOMContentLoaded', function() {
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
     restartBtn.addEventListener('click', () => { goToSlide(0); });
 
-    // --- 페이지 첫 로드 시 실행 로직 ---
+    // --- ✨ 수정된 페이지 첫 로드 시 실행 로직 ---
     updateAdditionalText(0);
     updateActiveStepButton(0);
-    // 첫 로드 시에는 비디오가 재생 중이므로 모든 제어 버튼을 숨깁니다.
-    // 비디오가 끝나면 updateButtonVisibility()가 호출되어 필요한 버튼만 보이게 됩니다.
-    hideAllButtons(); 
-
+    hideAllButtons(); // ✨ 페이지 로드 시 모든 버튼 숨기기
     if (videos[currentIndex]) {
         videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
     }
+
     if (ratingForm) {
         ratingForm.addEventListener('change', function(event) {
             if (currentIndex === totalSlides - 1 && event.target.name === 'rating') {
