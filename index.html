@@ -8,31 +8,9 @@
     /* 기존 스타일 */
     body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
     .main-container { width: 100%; max-width: 900px; margin: 40px auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); overflow: hidden; }
-    
-    .step-navigation { 
-        display: flex; 
-        background-color: #f8f9fa; 
-        padding: 10px; 
-        border-top: 1px solid #ddd;
-    }
-    
-    /* --- ✨ 수정된 단계별 탐색 버튼 스타일 --- */
-    .step-btn { 
-        flex-grow: 1; 
-        padding: 10px 5px; 
-        font-size: 16px; /* ✨ 14px에서 16px로 변경 */
-        font-weight: bold; 
-        text-align: center; 
-        background-color: transparent; 
-        border: none; 
-        border-top: 3px solid transparent; 
-        border-bottom: none; 
-        cursor: pointer; 
-        color: #888; 
-        transition: all 0.3s ease; 
-    }
+    .step-navigation { display: flex; background-color: #f8f9fa; padding: 10px; border-top: 1px solid #ddd; }
+    .step-btn { flex-grow: 1; padding: 10px 5px; font-size: 16px; font-weight: bold; text-align: center; background-color: transparent; border: none; border-top: 3px solid transparent; border-bottom: none; cursor: pointer; color: #888; transition: all 0.3s ease; }
     .step-btn.active { color: #007bff; border-top-color: #007bff; }
-    
     .slider-container { width: 100%; margin: 0; position: relative; overflow: hidden; background-color: #000; box-shadow: none; border-radius: 0; }
     .slider-wrapper { display: flex; }
     .slide { min-width: 100%; box-sizing: border-box; position: relative; }
@@ -52,7 +30,16 @@
     .satisfaction-rating label::before { content: '★'; position: absolute; left: 0; top: 0; width: 32px; color: #bbb; }
     .satisfaction-rating label.half::before { content: '★'; width: 16px; overflow: hidden; color: #ffc107; }
     .satisfaction-rating input:checked ~ label::before, .satisfaction-rating label:hover ~ label::before, .satisfaction-rating label:hover::before { color: #ffc107; }
-    .additional-text-area { max-width: 900px; margin: 20px auto; padding: 0 20px; box-sizing: border-box; text-align: center; }
+    
+    /* --- ✨ 수정된 하단 텍스트 영역 스타일 --- */
+    .additional-text-area { 
+        max-width: 900px; 
+        margin: 20px auto; 
+        padding: 0 20px; 
+        box-sizing: border-box; 
+        text-align: center; 
+        font-size: 1.1em; /* ✨ 텍스트 크기 키우기 */
+    }
 </style>
 </head>
 <body>
@@ -104,11 +91,11 @@
 // JavaScript는 변경 사항 없습니다.
 document.addEventListener('DOMContentLoaded', function() {
     
-    const stepLabels = ["1단계: 제품 커버 열기", "2단계: 필터 커버 열기", "3단계: 필터 분리"];
+    const stepLabels = ["1단계: 커버 열기", "2단계: 필터 교체", "3단계: 필터 세척"];
     const textData = [
-        { description: "제품 커버의 표시된 부분을 양손으로 잡아 힘껏 밀어서 분리합니다." },
-        { description: "필터 커버의 PUSH 버튼을 눌러 커버를 열어주세요." },
-        { description: "필터를 뒤로 힘껏 밀어 분리해주세요." }
+        { description: "정수기 상단 커버를 뒤로 밀어서 열어주세요. 필터 교체의 첫 단계입니다." },
+        { description: "사용한 필터를 위로 들어서 꺼낸 후, 새 필터를 방향에 맞게 끼워주세요." },
+        { description: "필터 교체 후에는 반드시 3분 이상 물을 흘려보내 필터를 세척해야 합니다." }
     ];
 
     const additionalDescription = document.getElementById('additional-description');
