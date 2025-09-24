@@ -25,10 +25,10 @@
     .replay-btn-wrapper.show { display: flex; }
     .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
     .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
-    .satisfaction-rating { margin-top: 20px; display: flex; justify-content: center; gap: 5px; pointer-events: auto; }
+    .satisfaction-rating { margin-top: 20px; display: flex; flex-direction: row-reverse; justify-content: center; gap: 5px; pointer-events: auto; }
     .satisfaction-rating .star { font-size: 30px; color: #bbb; cursor: pointer; transition: color 0.2s; }
     .satisfaction-rating .star.selected, .satisfaction-rating .star:hover, .satisfaction-rating .star:hover ~ .star { color: #ffc107; }
-    .satisfaction-rating:hover .star:hover ~ .star { color: #bbb; }
+    .satisfaction-rating:hover .star.selected ~ .star:not(:hover) { color: #bbb; }
     .additional-text-area { max-width: 900px; margin: 20px auto; padding: 0 20px; box-sizing: border-box; text-align: center; font-size: 1.1em; }
 </style>
 </head>
@@ -51,6 +51,7 @@
                     <button class="replay-btn">↻</button>
                     <div class="replay-text">다시보기</div>
                     <form id="ratingForm">
+                        <input type="hidden" id="ratingValue" name="entry.128318182" value="">
                         <div class="satisfaction-rating">
                             <span class="star" data-rating="5">★</span>
                             <span class="star" data-rating="4">★</span>
@@ -77,6 +78,49 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
+    // ... 기존 변수 선언들 ...
+    const ratingForm = document.getElementById('ratingForm');
+    const ratingValueInput = document.getElementById('ratingValue');
+    const ratingContainer = document.querySelector('.satisfaction-rating');
+    
+    // ✨ --- 1. 수정된 만족도 데이터 전송 함수 --- ✨
+    function submitRating(rating) {
+        ratingValueInput.value = rating; // 숨겨진 input에 값 설정
+        const formData = new FormData(ratingForm); // form 요소 전체를 인자로 전달
+        
+        const actionURL = 'https://docs.google.com/forms/d/e/1FAIpQLSd5g8hY1AzUMOYZQSbB2f43TtzSrHSNNvlCSasUew1tZqRZFA/formResponse';
+        
+        fetch(actionURL, {
+            method: 'POST',
+            body: formData,
+            mode: 'no-cors'
+        }).then(() => {
+            console.log('만족도 제출 완료:', rating);
+        }).catch(error => {
+            console.error('제출 실패:', error);
+        });
+    }
+
+    // --- 2. 별점 클릭 이벤트 수정 ---
+    if (ratingContainer) {
+        const stars = ratingContainer.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const selectedRating = this.dataset.rating;
+                alert(`만족도 ${selectedRating}점을 주셔서 감사합니다!`);
+                
+                submitRating(selectedRating); // 데이터 전송!
+                
+                stars.forEach(s => {
+                    s.classList.remove('selected');
+                    if (parseInt(s.dataset.rating) <= parseInt(selectedRating)) {
+                        s.classList.add('selected');
+                    }
+                });
+            });
+        });
+    }
+
     const stepLabels = ["1단계: 제품 커버 열기", "2단계: 필터 커버 열기", "3단계: 기존 필터 분리"];
     const textData = [
         { description: "상단 제품 커버의 표시된 부분을 잡고 힘껏 밀어 분리해주세요." },
@@ -93,29 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const restartBtn = document.querySelector('.restart-btn');
     const replayBtnWrappers = document.querySelectorAll('.replay-btn-wrapper');
     const replayBtns = document.querySelectorAll('.replay-btn');
-    const ratingContainer = document.querySelector('.satisfaction-rating');
     let currentIndex = 0;
     const totalSlides = videos.length;
-
-    // ✨ --- 1. 만족도 데이터 전송 함수 --- ✨
-    function submitRating(rating) {
-        const formData = new FormData();
-        // 🚨 이전에 알려드린 '만족도' 질문의 고유 ID 입니다.
-        formData.append('entry.128318182', rating);
-
-        // 🚨 이전에 알려드린 formResponse 주소입니다.
-        const actionURL = 'https://docs.google.com/forms/d/e/1FAIpQLSd5g8hY1AzUMOYZQSbB2f43TtzSrHSNNvlCSasUew1tZqRZFA/formResponse';
-        
-        fetch(actionURL, {
-            method: 'POST',
-            body: formData,
-            mode: 'no-cors'
-        }).then(() => {
-            console.log('만족도 제출 완료:', rating);
-        }).catch(error => {
-            console.error('제출 실패:', error);
-        });
-    }
 
     stepLabels.forEach((label, index) => {
         const button = document.createElement('button');
@@ -160,9 +183,9 @@ document.addEventListener('DOMContentLoaded', function() {
         hideAllButtons();
         replayBtnWrappers[currentIndex].classList.add('show');
         if (currentIndex === totalSlides - 1) {
-            if (ratingContainer) {
-                const stars = ratingContainer.querySelectorAll('.star');
-                stars.forEach(s => s.classList.remove('selected'));
+            if (ratingForm) {
+                ratingForm.reset();
+                ratingValueInput.value = ""; // 숨겨진 input 값도 초기화
             }
         }
         if (currentIndex === 0) {
@@ -214,28 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (videos[currentIndex]) {
         videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
     }
-
-    // ✨ --- 2. 별점 클릭 시 데이터 전송 기능 추가 --- ✨
-    if (ratingContainer) {
-        const stars = ratingContainer.querySelectorAll('.star');
-        stars.forEach(star => {
-            star.addEventListener('click', function() {
-                const selectedRating = this.dataset.rating;
-                alert(`만족도 ${selectedRating}점을 주셔서 감사합니다!`);
-                
-                submitRating(selectedRating); // 데이터 전송!
-                
-                stars.forEach(s => {
-                    s.classList.remove('selected');
-                    if (s.dataset.rating >= selectedRating) { // ✨ 오른쪽부터 채워지는 CSS 로직에 맞춤
-                        s.classList.add('selected');
-                    }
-                });
-            });
-        });
-    }
 });
 </script>
-
 </body>
 </html>
