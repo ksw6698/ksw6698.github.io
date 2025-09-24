@@ -21,15 +21,16 @@
     .slider-btn.show { opacity: 1; transform: translateY(0); display: block; }
     .slider-btn:hover { background-color: white; color: black; }
     .restart-btn { background-color: #007bff; border-color: #007bff; }
-    .replay-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 20; display: none; pointer-events: none; }
+    .replay-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 20; display: none; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+    .replay-btn-wrapper.show { display: flex; } /* ✨ show 클래스로 제어 */
     .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
     .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
     
     /* --- ✨ 수정된 0.5점 단위 별점 스타일 --- */
     .satisfaction-rating {
         margin-top: 20px;
-        display: flex; /* Flexbox 사용 */
-        direction: rtl; /* 오른쪽부터 채워지도록 */
+        display: flex;
+        direction: rtl;
         justify-content: center;
         pointer-events: auto;
     }
@@ -39,23 +40,23 @@
         color: #bbb;
         cursor: pointer;
         transition: color 0.2s;
-        width: 15px; /* 각 라벨은 별의 절반 너비 */
-        overflow: hidden; /* 절반만 보이도록 자르기 */
+        width: 15px;
+        overflow: hidden;
     }
     .satisfaction-rating label::before {
         content: '★';
         display: block;
-        width: 30px; /* 별 하나의 전체 너비 */
+        width: 30px;
     }
     .satisfaction-rating label:nth-of-type(odd)::before {
-        margin-left: -15px; /* 홀수 라벨은 별의 왼쪽 절반이 보이도록 */
+        margin-left: -15px;
     }
     .satisfaction-rating input:checked ~ label,
     .satisfaction-rating:hover label {
-        color: #ffc107; /* 선택되거나 호버된 별 색상 변경 */
+        color: #ffc107;
     }
     .satisfaction-rating label:hover ~ label {
-        color: #bbb; /* 호버되지 않은 뒷 별들은 다시 원래 색으로 */
+        color: #bbb;
     }
     
     .additional-text-area { max-width: 900px; margin: 20px auto; padding: 0 20px; box-sizing: border-box; text-align: center; font-size: 1.1em; }
@@ -166,12 +167,12 @@ document.addEventListener('DOMContentLoaded', function() {
         prevBtn.classList.remove('show');
         nextBtn.classList.remove('show');
         restartBtn.classList.remove('show');
-        replayBtnWrappers.forEach(wrapper => wrapper.style.display = 'none');
+        replayBtnWrappers.forEach(wrapper => wrapper.classList.remove('show')); // ✨ .show 클래스로 제어
     }
     
     function updateButtonVisibility() {
         hideAllButtons();
-        replayBtnWrappers[currentIndex].style.display = 'block';
+        replayBtnWrappers[currentIndex].classList.add('show'); // ✨ .show 클래스로 제어
         if (currentIndex === totalSlides - 1) {
             if (ratingForm) {
                 ratingForm.reset();
@@ -198,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
             video.pause();
             video.currentTime = 0;
         });
-        hideAllButtons(); // ✨ 버튼 숨기는 로직을 이곳으로 이동
+        hideAllButtons();
         if (videos[currentIndex]) {
             videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
         }
@@ -211,10 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
     replayBtns.forEach((btn, index) => {
         btn.addEventListener('click', () => {
             if(index === currentIndex) {
-                prevBtn.classList.remove('show');
-                nextBtn.classList.remove('show');
-                restartBtn.classList.remove('show');
-                replayBtnWrappers[currentIndex].style.display = 'none';
+                hideAllButtons(); // ✨ 모든 버튼 숨기기
                 videos[currentIndex].play();
             }
         });
@@ -224,10 +222,10 @@ document.addEventListener('DOMContentLoaded', function() {
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
     restartBtn.addEventListener('click', () => { goToSlide(0); });
 
-    // --- ✨ 수정된 페이지 첫 로드 시 실행 로직 ---
+    // --- 페이지 첫 로드 시 실행 로직 ---
     updateAdditionalText(0);
     updateActiveStepButton(0);
-    hideAllButtons(); // ✨ 페이지 로드 시 모든 버튼 숨기기
+    hideAllButtons();
     if (videos[currentIndex]) {
         videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
     }
