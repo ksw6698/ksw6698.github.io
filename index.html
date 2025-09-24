@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ... 기존 변수 선언들 ...
     const ratingForm = document.getElementById('ratingForm');
-    const ratingValueInput = document.getElementById('ratingValue');
+    const ratingValueInput = document.getElementById('ratingValue'); // ✨ 숨겨진 input 선택
     const ratingContainer = document.querySelector('.satisfaction-rating');
     
     // ✨ --- 1. 수정된 만족도 데이터 전송 함수 --- ✨
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentIndex === totalSlides - 1) {
             if (ratingForm) {
                 ratingForm.reset();
-                ratingValueInput.value = ""; // 숨겨진 input 값도 초기화
+                if(ratingValueInput) ratingValueInput.value = ""; // ✨ 숨겨진 input 값도 초기화
             }
         }
         if (currentIndex === 0) {
@@ -239,5 +239,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
 </body>
 </html>
