@@ -22,40 +22,30 @@
     .slider-btn:hover { background-color: white; color: black; }
     .restart-btn { background-color: #007bff; border-color: #007bff; }
     .replay-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 20; display: none; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-    .replay-btn-wrapper.show { display: flex; } /* ✨ show 클래스로 제어 */
+    .replay-btn-wrapper.show { display: flex; }
     .replay-btn { background-color: rgba(0, 0, 0, 0.6); color: white; border: 2px solid white; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; cursor: pointer; place-content: center; display: grid; margin: 0 auto 10px; pointer-events: auto; }
     .replay-text { color: white; font-size: 1.1em; font-weight: bold; pointer-events: auto; }
     
-    /* --- ✨ 수정된 0.5점 단위 별점 스타일 --- */
+    /* --- ✨ 수정된 1점 단위 별점 스타일 --- */
     .satisfaction-rating {
         margin-top: 20px;
         display: flex;
-        direction: rtl;
         justify-content: center;
+        gap: 5px;
         pointer-events: auto;
     }
-    .satisfaction-rating input { display: none; }
-    .satisfaction-rating label {
+    .satisfaction-rating .star {
         font-size: 30px;
         color: #bbb;
         cursor: pointer;
         transition: color 0.2s;
-        width: 15px;
-        overflow: hidden;
     }
-    .satisfaction-rating label::before {
-        content: '★';
-        display: block;
-        width: 30px;
-    }
-    .satisfaction-rating label:nth-of-type(odd)::before {
-        margin-left: -15px;
-    }
-    .satisfaction-rating input:checked ~ label,
-    .satisfaction-rating:hover label {
+    .satisfaction-rating .star.selected,
+    .satisfaction-rating .star:hover,
+    .satisfaction-rating .star:hover ~ .star {
         color: #ffc107;
     }
-    .satisfaction-rating label:hover ~ label {
+    .satisfaction-rating:hover .star:hover ~ .star {
         color: #bbb;
     }
     
@@ -80,18 +70,13 @@
                 <div class="replay-btn-wrapper">
                     <button class="replay-btn">↻</button>
                     <div class="replay-text">다시보기</div>
-                    <form class="satisfaction-rating" id="ratingForm">
-                        <input type="radio" id="star50" name="rating" value="5.0" /><label for="star50"></label>
-                        <input type="radio" id="star45" name="rating" value="4.5" /><label for="star45"></label>
-                        <input type="radio" id="star40" name="rating" value="4.0" /><label for="star40"></label>
-                        <input type="radio" id="star35" name="rating" value="3.5" /><label for="star35"></label>
-                        <input type="radio" id="star30" name="rating" value="3.0" /><label for="star30"></label>
-                        <input type="radio" id="star25" name="rating" value="2.5" /><label for="star25"></label>
-                        <input type="radio" id="star20" name="rating" value="2.0" /><label for="star20"></label>
-                        <input type="radio" id="star15" name="rating" value="1.5" /><label for="star15"></label>
-                        <input type="radio" id="star10" name="rating" value="1.0" /><label for="star10"></label>
-                        <input type="radio" id="star05" name="rating" value="0.5" /><label for="star05"></label>
-                    </form>
+                    <div class="satisfaction-rating">
+                        <span class="star" data-rating="5">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="1">★</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -126,10 +111,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const restartBtn = document.querySelector('.restart-btn');
     const replayBtnWrappers = document.querySelectorAll('.replay-btn-wrapper');
     const replayBtns = document.querySelectorAll('.replay-btn');
-    const ratingForm = document.getElementById('ratingForm');
+    const ratingContainer = document.querySelector('.satisfaction-rating'); // ✨ 별점 컨테이너 선택
     let currentIndex = 0;
     const totalSlides = videos.length;
-    let currentSelectedRating = 0;
     
     stepLabels.forEach((label, index) => {
         const button = document.createElement('button');
@@ -167,16 +151,17 @@ document.addEventListener('DOMContentLoaded', function() {
         prevBtn.classList.remove('show');
         nextBtn.classList.remove('show');
         restartBtn.classList.remove('show');
-        replayBtnWrappers.forEach(wrapper => wrapper.classList.remove('show')); // ✨ .show 클래스로 제어
+        replayBtnWrappers.forEach(wrapper => wrapper.classList.remove('show'));
     }
     
     function updateButtonVisibility() {
         hideAllButtons();
-        replayBtnWrappers[currentIndex].classList.add('show'); // ✨ .show 클래스로 제어
+        replayBtnWrappers[currentIndex].classList.add('show');
         if (currentIndex === totalSlides - 1) {
-            if (ratingForm) {
-                ratingForm.reset();
-                currentSelectedRating = 0;
+            // 별점 초기화
+            if (ratingContainer) {
+                const stars = ratingContainer.querySelectorAll('.star');
+                stars.forEach(s => s.classList.remove('selected'));
             }
         }
         if (currentIndex === 0) {
@@ -212,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
     replayBtns.forEach((btn, index) => {
         btn.addEventListener('click', () => {
             if(index === currentIndex) {
-                hideAllButtons(); // ✨ 모든 버튼 숨기기
+                hideAllButtons();
                 videos[currentIndex].play();
             }
         });
@@ -222,7 +207,6 @@ document.addEventListener('DOMContentLoaded', function() {
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
     restartBtn.addEventListener('click', () => { goToSlide(0); });
 
-    // --- 페이지 첫 로드 시 실행 로직 ---
     updateAdditionalText(0);
     updateActiveStepButton(0);
     hideAllButtons();
@@ -230,12 +214,22 @@ document.addEventListener('DOMContentLoaded', function() {
         videos[currentIndex].play().catch(error => { console.log("Autoplay was prevented: ", error); });
     }
 
-    if (ratingForm) {
-        ratingForm.addEventListener('change', function(event) {
-            if (currentIndex === totalSlides - 1 && event.target.name === 'rating') {
-                currentSelectedRating = parseFloat(event.target.value);
-                alert(`만족도 ${currentSelectedRating}점을 주셔서 감사합니다!`);
-            }
+    // ✨ 수정된 1점 단위 별점 스크립트
+    if (ratingContainer) {
+        const stars = ratingContainer.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const selectedRating = this.dataset.rating;
+                alert(`만족도 ${selectedRating}점을 주셔서 감사합니다!`);
+                
+                // 클릭된 별 고정
+                stars.forEach(s => {
+                    s.classList.remove('selected');
+                    if (s.dataset.rating <= selectedRating) {
+                        s.classList.add('selected');
+                    }
+                });
+            });
         });
     }
 });
