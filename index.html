@@ -8,9 +8,18 @@
     /* 기존 스타일 */
     body { font-family: sans-serif; margin: 0; background-color: #f0f0f0; }
     .main-container { width: 100%; max-width: 900px; margin: 40px auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); overflow: hidden; }
-    .step-navigation { display: flex; background-color: #f8f9fa; padding: 10px; }
-    .step-btn { flex-grow: 1; padding: 10px 5px; font-size: 14px; font-weight: bold; text-align: center; background-color: transparent; border: none; border-bottom: 3px solid transparent; cursor: pointer; color: #888; transition: all 0.3s ease; }
-    .step-btn.active { color: #007bff; border-bottom-color: #007bff; }
+    
+    /* --- ✨ 수정된 단계별 탐색 버튼 스타일 --- */
+    .step-navigation { 
+        display: flex; 
+        background-color: #f8f9fa; 
+        padding: 10px; 
+        border-top: 1px solid #ddd; /* 상단 구분선 추가 */
+    }
+    
+    .step-btn { flex-grow: 1; padding: 10px 5px; font-size: 14px; font-weight: bold; text-align: center; background-color: transparent; border: none; border-top: 3px solid transparent; /* 밑줄을 위로 이동 */ border-bottom: none; cursor: pointer; color: #888; transition: all 0.3s ease; }
+    .step-btn.active { color: #007bff; border-top-color: #007bff; /* 활성 상태의 윗줄 */ }
+    
     .slider-container { width: 100%; margin: 0; position: relative; overflow: hidden; background-color: #000; box-shadow: none; border-radius: 0; }
     .slider-wrapper { display: flex; }
     .slide { min-width: 100%; box-sizing: border-box; position: relative; }
@@ -36,7 +45,7 @@
 <body>
 
 <div class="main-container">
-    <div class="step-navigation"></div>
+    
     <div class="slider-container">
         <div class="slider-wrapper">
             <div class="slide">
@@ -72,6 +81,8 @@
             <div class="button-group-right"><button class="slider-btn next-btn">다음으로 이동 ❯</button><button class="slider-btn restart-btn">처음부터 다시 보기 ↻</button></div>
         </div>
     </div>
+
+    <div class="step-navigation"></div>
 </div>
 
 <div class="additional-text-area">
@@ -79,16 +90,15 @@
 </div>
 
 <script>
+// JavaScript는 변경 사항 없습니다.
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- 1. 버튼 이름과 하단 텍스트를 이곳에서 수정하세요 ---
     const stepLabels = ["1단계: 커버 열기", "2단계: 필터 교체", "3단계: 필터 세척"];
     const textData = [
         { description: "정수기 상단 커버를 뒤로 밀어서 열어주세요. 필터 교체의 첫 단계입니다." },
         { description: "사용한 필터를 위로 들어서 꺼낸 후, 새 필터를 방향에 맞게 끼워주세요." },
         { description: "필터 교체 후에는 반드시 3분 이상 물을 흘려보내 필터를 세척해야 합니다." }
     ];
-    // -----------------------------------------------------------------
 
     const additionalDescription = document.getElementById('additional-description');
     const stepNavigation = document.querySelector('.step-navigation');
@@ -198,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function() {
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { goToSlide(currentIndex - 1); } });
     restartBtn.addEventListener('click', () => { goToSlide(0); });
 
-    // --- 페이지 첫 로드 시 실행 로직 ---
     updateAdditionalText(0);
     updateActiveStepButton(0);
     hideAllButtons();
