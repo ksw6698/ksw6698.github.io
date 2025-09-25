@@ -51,7 +51,7 @@
                     <button class="replay-btn">↻</button>
                     <div class="replay-text">다시보기</div>
                     <form id="ratingForm">
-                        <input type="hidden" id="ratingValue" name="entry.128318182" value="">
+                        <input type="hidden" id="ratingValue" name="entry.1318776978" value="">
                         <div class="satisfaction-rating">
                             <span class="star" data-rating="5">★</span>
                             <span class="star" data-rating="4">★</span>
@@ -78,49 +78,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ... 기존 변수 선언들 ...
-    const ratingForm = document.getElementById('ratingForm');
-    const ratingValueInput = document.getElementById('ratingValue'); // ✨ 숨겨진 input 선택
-    const ratingContainer = document.querySelector('.satisfaction-rating');
-    
-    // ✨ --- 1. 수정된 만족도 데이터 전송 함수 --- ✨
-    function submitRating(rating) {
-        ratingValueInput.value = rating; // 숨겨진 input에 값 설정
-        const formData = new FormData(ratingForm); // form 요소 전체를 인자로 전달
-        
-        const actionURL = 'https://docs.google.com/forms/d/e/1FAIpQLSd5g8hY1AzUMOYZQSbB2f43TtzSrHSNNvlCSasUew1tZqRZFA/formResponse';
-        
-        fetch(actionURL, {
-            method: 'POST',
-            body: formData,
-            mode: 'no-cors'
-        }).then(() => {
-            console.log('만족도 제출 완료:', rating);
-        }).catch(error => {
-            console.error('제출 실패:', error);
-        });
-    }
-
-    // --- 2. 별점 클릭 이벤트 수정 ---
-    if (ratingContainer) {
-        const stars = ratingContainer.querySelectorAll('.star');
-        stars.forEach(star => {
-            star.addEventListener('click', function() {
-                const selectedRating = this.dataset.rating;
-                alert(`만족도 ${selectedRating}점을 주셔서 감사합니다!`);
-                
-                submitRating(selectedRating); // 데이터 전송!
-                
-                stars.forEach(s => {
-                    s.classList.remove('selected');
-                    if (parseInt(s.dataset.rating) <= parseInt(selectedRating)) {
-                        s.classList.add('selected');
-                    }
-                });
-            });
-        });
-    }
-
     const stepLabels = ["1단계: 제품 커버 열기", "2단계: 필터 커버 열기", "3단계: 기존 필터 분리"];
     const textData = [
         { description: "상단 제품 커버의 표시된 부분을 잡고 힘껏 밀어 분리해주세요." },
@@ -137,8 +94,48 @@ document.addEventListener('DOMContentLoaded', function() {
     const restartBtn = document.querySelector('.restart-btn');
     const replayBtnWrappers = document.querySelectorAll('.replay-btn-wrapper');
     const replayBtns = document.querySelectorAll('.replay-btn');
+    const ratingForm = document.getElementById('ratingForm');
+    const ratingValueInput = document.getElementById('ratingValue');
+    const ratingContainer = document.querySelector('.satisfaction-rating');
     let currentIndex = 0;
     const totalSlides = videos.length;
+
+    function submitRating(rating) {
+        ratingValueInput.value = rating;
+        const formData = new FormData(ratingForm);
+        
+        // ✨ 획득한 링크로 actionURL 변경
+        const actionURL = 'https://docs.google.com/forms/d/e/1FAIpQLSe_l2sGYM5SI9Lp8qY2b_BFJdWHZTymMu29nBK5rJfMbopa4w/formResponse';
+        
+        fetch(actionURL, {
+            method: 'POST',
+            body: formData,
+            mode: 'no-cors'
+        }).then(() => {
+            console.log('만족도 제출 완료:', rating);
+        }).catch(error => {
+            console.error('제출 실패:', error);
+        });
+    }
+
+    if (ratingContainer) {
+        const stars = ratingContainer.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const selectedRating = this.dataset.rating;
+                alert(`만족도 ${selectedRating}점을 주셔서 감사합니다!`);
+                
+                submitRating(selectedRating);
+                
+                stars.forEach(s => {
+                    s.classList.remove('selected');
+                    if (parseInt(s.dataset.rating) <= parseInt(selectedRating)) {
+                        s.classList.add('selected');
+                    }
+                });
+            });
+        });
+    }
 
     stepLabels.forEach((label, index) => {
         const button = document.createElement('button');
@@ -185,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentIndex === totalSlides - 1) {
             if (ratingForm) {
                 ratingForm.reset();
-                if(ratingValueInput) ratingValueInput.value = ""; // ✨ 숨겨진 input 값도 초기화
+                if(ratingValueInput) ratingValueInput.value = "";
             }
         }
         if (currentIndex === 0) {
